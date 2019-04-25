@@ -16,9 +16,7 @@ emmmmmmmmm。。。个人网站 （www.yuartian.com） // 近期并不打算更�
 - <a href="https://github.com/YuArtian/blog/issues/4">变量声明，作用域 和 this 的碎碎念</a>
 
 下面是我的面经或者说是凉经 T。T<br><br>
-最近面试的很不顺心。。<br><br>
-555555..... 我就是个前端打字员啊， 会打字就完了呗干嘛要为难我啊<br><br>
-但是那并不表示下面这些问题我一个也没打上来！(好气啊)<br><br>
+但是那并不表示下面这些问题我一个也没打上来<br><br>
 也不表示下面这些回答都是`正确`&&`完美`的（摊手）
 
 - <a href="https://github.com/YuArtian/blog/issues/5">如何判断回文字符串</a>
