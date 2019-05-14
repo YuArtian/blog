@@ -2,7 +2,7 @@
 
 > 最近在做交易所相关的项目，用到的一个非常好用的 React 库。用来做拖拽组件的，先上法王！
 
-![RGL_show](/Users/yuartian/Downloads/RGL_show.gif)
+![RGL_show](https://github.com/YuArtian/blog/blob/master/img/react_grid_layout_show.gif)
 
 (图片来自RGL官方git) gif 录制自 [BitMEX.com](https://www.bitmex.com/)
 
