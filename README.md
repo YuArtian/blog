@@ -29,6 +29,7 @@ emmmmmmmmm。。。个人网站 （www.yuartian.com） // 近期并不打算更�
 - <a href="https://github.com/YuArtian/blog/issues/11">求两数之和</a>
 - <a href="https://github.com/YuArtian/blog/issues/13">给定两个数组，求交集</a>
 - <a href="https://github.com/YuArtian/blog/issues/14">数组去重和数组扁平化</a>
+- <a href="https://github.com/YuArtian/blog/issues/16">只出现一次的数字</a>
 
 下面是良心推荐环节~ 里面是我用过的比较好用的库，再次也当做一个记录吧 ~ 。~
 - <a href="https://github.com/YuArtian/blog/issues/12">【良心推荐】--> React-Grid-Layout</a>
