@@ -2,7 +2,9 @@
 ## 这是一个个人博客
 ### 所以说 我想怎么水(鸽)就怎么水(鸽)～ 
 但是也包括一些思考 和 总结 和 分享 和 不知道你知不知道的玩意。。。<br><br>
-emmmmmmmmm。。。个人网站 （www.yuartian.com） // 近期并不打算更新个站内容。 是的 那上面就一个页面 你没看错
+emmmmmmmmm。。。个人网站 （www.yuartian.com） // 网站被毙了，等我有时间搞个阿里云吧还是 -，-||
+
+<img src="https://github.com/YuArtian/blog/blob/master/img/gegege.jpeg"/>
 
 ### 上新啦~~ 新制作了思维导图，帮助<del>自己</del>大家梳理一些基础的知识，省得面试复习的时候没底儿哈。哈。。哈。。。
 还有没补全的部分，我会一直更新哒~
@@ -15,6 +17,7 @@ emmmmmmmmm。。。个人网站 （www.yuartian.com） // 近期并不打算更�
 - <a href="https://github.com/YuArtian/blog/issues/3">容我小小的写个继承</a>
 - <a href="https://github.com/YuArtian/blog/issues/4">变量声明，作用域 和 this 的碎碎念</a>
 - <a href="https://github.com/YuArtian/blog/issues/15">JavaScript 数字精度</a>
+- <a href="https://github.com/YuArtian/blog/issues/18">前端实现点击下载全攻略</a>
 
 下面是我的面经或者说是凉经 T。T<br><br>
 但是那并不表示下面这些问题我一个也没打上来<br><br>
