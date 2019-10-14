@@ -21,6 +21,8 @@
 - <a href="https://github.com/YuArtian/blog/issues/4">变量声明，作用域 和 this 的碎碎念</a>
 - <a href="https://github.com/YuArtian/blog/issues/15">JavaScript 浮点数运算防坑指南</a>
 - <a href="https://github.com/YuArtian/blog/issues/18">前端实现点击下载全攻略</a>
+---- 我的一些玩具啥的 ----
+- <a href="https://github.com/YuArtian/y-redux">练习自己写个跟Redux一样的Redux，手写一下源码，主要加深下理解</a>
 
 下面是我的面经或者说是凉经 T。T<br><br>
 但是那并不表示下面这些问题我一个也没打上来<br><br>
