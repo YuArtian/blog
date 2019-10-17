@@ -5,7 +5,7 @@
 1. 生成一个新对象{}
 2. 将新对象的 \_\_proto\_\_ (隐式原型)指向构造函数的prototype
 3. 将this绑定到新对象上
-4. 返回构造函数的返回值，如果构造函数没有返回，则返回这个新对象
+4. 判断构造函数的返回值，如果构造函数没有返回值或者返回值类型不是对象，则返回这个新对象； 否则返回构造函数的返回值
 
 ### ES5实现
 
@@ -15,10 +15,7 @@ function _new (fn){
     var args = Array.prototype.shift.call(arguments)
     obj.__proto__ = fn.prototype
     var result = fn.apply(obj, args)
-    if(result instanceof Object){
-        return result
-    }
-    return obj
+    return result instanceof Object ? result : obj
 }
 ```
 
