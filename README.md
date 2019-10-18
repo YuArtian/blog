@@ -5,6 +5,7 @@
 阿里云搞定了，但是我又又又又失业了，特么的又又又又一次整个部门被裁掉了。。。
 我真是无语了，现在就靠给的那点赔偿苟延残喘。。。
 所以，我又开始面(被)试(虐)了，会更新一些面试题，个人网站什么的。。先放着吧 T。T
+#### 事实证明成年人的脑子 <del>我的</del> 根本记不住什么东西。。。
 <del>emmmmmmmmm。。。个人网站 （www.yuartian.com） // 网站被毙了，等我有时间搞个阿里云吧还是 -，-||</del>
 
 <img src="https://github.com/YuArtian/blog/blob/master/img/gegege.jpeg"/>
