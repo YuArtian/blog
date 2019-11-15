@@ -8,12 +8,9 @@
 #### 事实证明成年人的脑子 <del>我的</del> 根本记不住什么东西。。。
 <del>emmmmmmmmm。。。个人网站 （www.yuartian.com） // 网站被毙了，等我有时间搞个阿里云吧还是 -，-||</del>
 
-<img src="https://github.com/YuArtian/blog/blob/master/img/gegege.jpeg"/>
-
 ### 上新啦~~ 新制作了思维导图，帮助<del>自己</del>大家梳理一些基础的知识，省得面试复习的时候没底儿哈。哈。。哈。。。
 还有没补全的部分，我会一直更新哒~
 概览图 --->(详情请自行<a href='https://github.com/YuArtian/blog/blob/master/%E5%89%8D%E7%AB%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE.xmind'>下载</a> 前端基础知识思维导图.xmind)
-<img src='https://github.com/YuArtian/blog/blob/master/img/%E5%89%8D%E7%AB%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86.png'/>
 
 ---- 博客内容 ----
 - <a href="https://github.com/YuArtian/blog/issues/1">\_\_proto\_\_ 和 prototype的关系</a>
@@ -25,6 +22,9 @@
 
 ---- 我的一些玩具啥的 ----
 - <a href="https://github.com/YuArtian/y-redux">练习自己写个跟Redux一样的Redux，手写一下源码，主要加深下理解</a>
+
+---- 随手记 ----
+- <a href="https://github.com/YuArtian/blog/issues/19">随手记 --- 权限系统中的替换节点问题</a>
 
 下面是我的面经或者说是凉经 T。T<br><br>
 但是那并不表示下面这些问题我一个也没打上来<br><br>
