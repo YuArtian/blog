@@ -19,7 +19,7 @@
 - <a href="https://github.com/YuArtian/blog/issues/4">变量声明，作用域 和 this 的碎碎念</a>
 - <a href="https://github.com/YuArtian/blog/issues/15">JavaScript 浮点数运算防坑指南</a>
 - <a href="https://github.com/YuArtian/blog/issues/18">前端实现点击下载全攻略</a>
-- <a href="https://github.com/YuArtian/blog/blob/master/JS%E4%B8%AD%E7%9A%84%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E2%80%94%E2%80%94%E9%93%BE%E8%A1%A8(Linked-list).md">JS中的算法与数据结构——链表(Linked-list)</a>
+- <a href="https://github.com/YuArtian/blog/blob/master/JS%E4%B8%AD%E7%9A%84%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E2%80%94%E2%80%94%E9%93%BE%E8%A1%A8(Linked-list).md">【我有一个链表想跟你谈谈~】- JS中的算法与数据结构-链表(Linked-list)</a>
 
 ---- 我的一些玩具啥的 ----
 - <a href="https://github.com/YuArtian/y-redux">练习自己写个跟Redux一样的Redux，手写一下源码，主要加深下理解</a>
