@@ -295,7 +295,7 @@ console.log('newList',newList) // 1->1->2->3->4->4
 
 其实就是脑筋急转弯...非常无语
 
-```text
+```js
 /**
  * Definition for singly-linked list.
  * function ListNode(val) {
@@ -332,7 +332,7 @@ var deleteNode = function(node) {
 
 你可以迭代或递归地反转链表。你能否用两种方法解决这道题？
 
-```text
+```js
 /**
  * Definition for singly-linked list.
  * function ListNode(val) {
@@ -359,7 +359,7 @@ var reverseList = function(head) {
 
 ### [链表的中间结点]([力扣](https://link.zhihu.com/?target=https%3A//leetcode-cn.com/problems/middle-of-the-linked-list/)) (leetcode 876)
 
-```text
+```js
 /**
  * Definition for singly-linked list.
  * function ListNode(val) {
@@ -395,7 +395,7 @@ var middleNode = function(head) {
 
 ### [相交链表]([力扣](https://link.zhihu.com/?target=https%3A//leetcode-cn.com/problems/intersection-of-two-linked-lists/))(leetcode 160)
 
-```text
+```js
 /**
  * Definition for singly-linked list.
  * function ListNode(val) {
@@ -451,7 +451,7 @@ var getIntersectionNode = function(headA, headB) {
 
 ### [删除排序链表中的重复元素]([力扣](https://link.zhihu.com/?target=https%3A//leetcode-cn.com/problems/remove-duplicates-from-sorted-list/))(leetcode 83)
 
-```text
+```js
 /**
  * Definition for singly-linked list.
  * function ListNode(val) {
@@ -478,7 +478,7 @@ var deleteDuplicates = function(head) {
 
 ### [环形链表]([力扣](https://link.zhihu.com/?target=https%3A//leetcode-cn.com/problems/linked-list-cycle/))(leetcode141)
 
-```text
+```js
 /**
  * Definition for singly-linked list.
  * function ListNode(val) {
@@ -529,7 +529,7 @@ var hasCycle = function(head) {
 
 ### [移除链表元素]([力扣](https://link.zhihu.com/?target=https%3A//leetcode-cn.com/problems/remove-linked-list-elements/))(leetcode 203)
 
-```text
+```js
 /**
  * Definition for singly-linked list.
  * function ListNode(val) {
