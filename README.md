@@ -23,7 +23,7 @@
 
 ---- 我的一些玩具啥的 ----
 - <a href="https://github.com/YuArtian/y-redux">练习自己写个跟Redux一样的Redux，手写一下源码，主要加深下理解</a>
-- <a href="https://github.com/YuArtian/y-webpack">自己实现一个简单的webpack</a>
+- <a href="https://github.com/YuArtian/y-webpack">自己实现一个简单的webpack(简易版)</a>
 
 ---- 随手记 ----
 - <a href="https://github.com/YuArtian/blog/issues/19">随手记 --- 权限系统中的替换节点问题</a>
