@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<script type="text/javascript">
+	function indexOf (value, searchValue, fromIndex){
+		//判断 value 类型
+	  if( typeof(value) !== 'string' && !Array.isArray(value) ){
+	    throw new TypeError('value must be Array or String');
+	  }
+	  //如果 value 是字符串则自动转换 searchValue 为 String
+	  let v = typeof(value) === 'string' ? String(searchValue) : searchValue
+	  let k
+	  let O = Object(value)
+	  let len = value.length
+	  //长度为 0 的返回 -1
+	  if(len === 0){
+	  	return -1
+	  }
+	  //将 fromIndex 转换成 数字，这也就意味着 fromIndex 可以输入字符串
+	  //无法转换的会被置为 0
+	  let n = +fromIndex || 0
+	  //Infinity 返回 -1
+	  if(Math.abs(n) === Infinity){
+	  	return -1
+	  }
+	  //总长度比 fromIndex 还小的 返回-1
+	  if(len <= n){
+	  	return -1
+	  }
+	  //确定实际要查找的位置 k
+	  //兼容转换了 n 是负数的情况
+	  k = Math.max(n >= 0 ? n : (len - Math.abs(n)), 0)
+	  
+  	//数组的循环查找
+	  while(k < len){
+	  	//找到则返回位置 k
+	  	if(k in O && O[k] === v){
+	  		return k
+	  	}
+	  	k++
+	  }
+	  //字符串的查找 要支持 searchValue 为字符串的情况
+	  while(k < len){
+	  	//找到则返回位置 k
+	  	if(k in O && O[k] === v[0]){
+	  		if(v.length > 1) {
+	  			for(let i=0; i <= v.length; i++){
+	  				if(O[k+i] !== v[i]) {
+	  					return -1
+	  				}
+	  			}
+	  		}
+	  		return k
+	  	}
+	  	k++
+	  }
+
+	 	//没有找到 返回 -1
+	 	return -1
+	}
+	/* test */
+	console.log(indexOf('123', 0)) // -1
+	console.log(indexOf('123', 1)) // 0
+	console.log(indexOf('123', 2, 0)) // 1
+	console.log(indexOf('123', 2, 1)) // 1
+	console.log(indexOf('123', 1, 3)) // -1
+	console.log(indexOf('123', 1, {})) // 0
+	console.log(indexOf('123', 1, Infinity)) // -1
+	console.log(indexOf('123', 1, 'Infinity')) // -1
+	console.log(indexOf('false', false)) // 0
+
+
+	console.log(indexOf([1,2,3], 0)) // 1
+
+</script>
+</body>
+</html>
