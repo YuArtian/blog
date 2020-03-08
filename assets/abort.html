@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /* 模拟请求 */
+    function mockRequestTrigger (request) {
+      setTimeout(function(){
+        request.callback()
+      }, request.time)
+    }
+    /* 请求列表 */
+    const requestList = [
+      {
+        time: 3000,
+        callback: new Promise(function(resolve, reject){
+          console.log('mock request 1 promise')
+          setTimeout(_ => {
+            resolve('===== mock request 1 =====')
+          }, 3000)
+        })
+      },
+      /* {
+        time: 1000,
+        callback: function(){
+          console.log('===== mock request 2 =====')
+        }
+      },
+      {
+        time: 2000,
+        callback: function(){
+          console.log('===== mock request 3 =====')
+        }
+      }, */
+    ]
+    /* 发出请求 */
+    requestList.map(item => {
+      // mockRequestTrigger(item)
+      console.log('item',item)
+      item.callback.then(res => {
+        console.log('res',res)
+      })
+    })
+
+  </script>
+</body>
+</html>
