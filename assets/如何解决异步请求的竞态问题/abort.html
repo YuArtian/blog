@@ -40,6 +40,7 @@
   <br><br>
   <textarea name="result" id="result_1" cols="30" rows="10"></textarea>
   <script>
+    /* 改造之后的事件 */
     async function handleInput_1 () {
       console.log('handleInput_1');
       //模拟随用户输入的异步请求
@@ -56,6 +57,34 @@
   <br><br>
   <textarea name="result" id="result_2" cols="30" rows="10"></textarea>
   <script>
+    /* 封装 XHR */
+    function xhrAdapter (index) {
+      return new Promise(function (resolve, reject) {
+        var request = new XMLHttpRequest();
+        request.open('GET', `http://127.0.0.1:3000/mock?index=${index}`, true)
+        request.onreadystatechange = function handleLoad () {
+          if (!request || request.readyState !== 4) {
+            return;
+          }
+          if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+            return;
+          }
+          console.log('request ==>',request);
+          var response = {
+            data: request.responseText,
+            status: request.status,
+            statusText: request.statusText,
+          };
+          resolve(response);
+        }
+        request.send()
+      })
+    }
+
+    async function handleInput_2 () {
+      const res = await xhrAdapter(index)
+      console.log('res', res);
+    }
     
   </script>
 </body>
