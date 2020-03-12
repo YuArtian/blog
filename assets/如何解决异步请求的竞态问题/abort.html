@@ -42,11 +42,9 @@
   <script>
     /* 改造之后的事件 */
     async function handleInput_1 () {
-      console.log('handleInput_1');
       //模拟随用户输入的异步请求
       const res = await mockRequest()
       console.log(`响应第 ${res} 个请求`,res);
-      console.log('index',index);
       //如果不是最后一个请求 不做任何处理
       if (res !== index) return
       document.querySelector('#result_1').value = `这是第 ${res} 个请求的处理结果`
@@ -57,7 +55,6 @@
   <br><br>
   <textarea name="result" id="result_2" cols="30" rows="10"></textarea>
   <script>
-
     /* 封装 XHR */
     function xhrAdapter (index) {
       return new Promise(function (resolve, reject) {
