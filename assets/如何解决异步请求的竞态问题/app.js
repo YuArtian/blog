@@ -16,7 +16,8 @@ const server = http.createServer((req, res) => {
     let time = Math.random() * 1000
     console.log(`接受到第 ${query.index} 个模拟请求, ${time} ms 后响应`)
     setTimeout(_ => {
-      res.end(`响应第 ${query.index} 个模拟请求`)
+      console.log(`响应第 ${query.index} 个模拟请求`)
+      res.end(query.index)
     }, time)
   }
 });

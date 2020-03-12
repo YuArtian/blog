@@ -57,6 +57,7 @@
   <br><br>
   <textarea name="result" id="result_2" cols="30" rows="10"></textarea>
   <script>
+
     /* 封装 XHR */
     function xhrAdapter (index) {
       return new Promise(function (resolve, reject) {
@@ -69,7 +70,6 @@
           if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
             return;
           }
-          console.log('request ==>',request);
           var response = {
             data: request.responseText,
             status: request.status,
@@ -82,10 +82,11 @@
     }
 
     async function handleInput_2 () {
-      const res = await xhrAdapter(index)
-      console.log('res', res);
+      index++
+      const { data } = await xhrAdapter(index)
+      document.querySelector('#result_2').value = `这是第 ${data} 个请求的处理结果`
     }
-    
+
   </script>
 </body>
 </html>
