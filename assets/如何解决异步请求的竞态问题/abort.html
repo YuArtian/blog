@@ -74,12 +74,9 @@
           };
           resolve(response);
         }
+
         request.send()
       })
-    }
-    /* Cancel token */
-    function Cancel () {
-
     }
     /*  */
     async function handleInput_2 () {
@@ -87,7 +84,53 @@
       const { data } = await xhrAdapter(index)
       document.querySelector('#result_2').value = `这是第 ${data} 个请求的处理结果`
     }
+  </script>
+  <hr>
+  <input type="text" value="" placeholder="连续输入发出异步请求" oninput="handleInput_3()">
+  <br><br>
+  <textarea name="result" id="result_3" cols="30" rows="10"></textarea>
+  <script>
 
+    /* Cancel */
+    class Cancel {
+      constructor(message){
+        this.message = message;
+      }
+    }
+    /* Cancel Token */
+    class CancelToken {
+      constructor(executor){
+        if (typeof executor !== 'function') {
+          throw new TypeError('executor must be a function.');
+        }
+        let resolvePromise
+        this.promise = new Promise(function promiseExecutor(resolve) {
+          resolvePromise = resolve;
+        });
+
+        let token = this;
+        executor(function cancel(message) {
+          if (token.reason) {
+            return;
+          }
+
+          token.reason = new Cancel(message);
+          resolvePromise(token.reason);
+        });
+      }
+      source(){
+        let cancel;
+        let token = new CancelToken(function executor(c) {
+          cancel = c;
+        });
+        return {
+          token: token,
+          cancel: cancel
+        };
+      }
+    }
+    /*  */
+    
   </script>
 </body>
 </html>
