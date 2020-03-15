@@ -90,7 +90,41 @@
   <br><br>
   <textarea name="result" id="result_3" cols="30" rows="10"></textarea>
   <script>
-
+    /* 改装之后的 XHR 封装 */
+    function xhrAdapter (index, cancelToken) {
+      return new Promise(function (resolve, reject) {
+        var request = new XMLHttpRequest();
+        request.open('GET', `http://127.0.0.1:3000/mock?index=${index}`, true)
+        request.onreadystatechange = function handleLoad () {
+          if (!request || request.readyState !== 4) {
+            return;
+          }
+          if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+            return;
+          }
+          var response = {
+            data: request.responseText,
+            status: request.status,
+            statusText: request.statusText,
+          };
+          resolve(response);
+        }
+        //需要取消的请求
+        if (cancelToken) {
+          cancelToken.promise.then(function onCanceled (cancel) {
+            if (!request) {
+              return
+            }
+            //取消未发出的请求
+            request.abort()
+            //将promise状态转为失败
+            reject(cancel)
+            request = null
+          })
+        }
+        request.send()
+      })
+    }
     /* Cancel */
     class Cancel {
       constructor(message){
@@ -129,8 +163,19 @@
         };
       }
     }
-    /*  */
-    
+    /* 用法 */
+    let cancel
+
+    async function handleInput_3 () {
+      if (cancel) {
+        cancel(`取消第 ${index} 个请求`)
+      }
+      index++
+      const { data } = await xhrAdapter(index, new CancelToken(function executor(c) {
+        cancel = c
+      }))
+      document.querySelector('#result_3').value = `这是第 ${data} 个请求的处理结果`
+    }
   </script>
 </body>
 </html>
