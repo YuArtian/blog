@@ -11,7 +11,7 @@
   <textarea name="result" id="result" cols="30" rows="10"></textarea>
   <script>
     //请求记录
-    let index = 0
+    let index = 0;
     /* 改装之后的 XHR 封装 */
     function xhrAdapter (index, cancelToken) {
       return new Promise(function (resolve, reject) {
@@ -21,7 +21,7 @@
           if (!request || request.readyState !== 4) {
             return;
           }
-          if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+          if (request.status === 0) {
             return;
           }
           var response = {
@@ -83,7 +83,7 @@
       }
     }
     /* 用法 */
-    let cancel
+    let cancel;
     /* 响应输入事件 */
     async function handleInput () {
       if (cancel) {
