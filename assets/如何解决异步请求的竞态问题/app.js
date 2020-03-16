@@ -11,7 +11,6 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   const { pathname, query } = url.parse(req.url, true);
   if (pathname === '/mock') {
-    console.log('mock');
     //随机时间
     let time = Math.random() * 1000
     console.log(`接受到第 ${query.index} 个模拟请求, ${time} ms 后响应`)

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" value="" placeholder="连续输入发出异步请求" oninput="handleInput()">
+  <hr>
+  <textarea name="result" id="result" cols="30" rows="10"></textarea>
+  <script>
+    //请求记录
+    let index = 0
+    /* 改装之后的 XHR 封装 */
+    function xhrAdapter (index, cancelToken) {
+      return new Promise(function (resolve, reject) {
+        var request = new XMLHttpRequest();
+        request.open('GET', `http://127.0.0.1:3000/mock?index=${index}`, true)
+        request.onreadystatechange = function handleLoad () {
+          if (!request || request.readyState !== 4) {
+            return;
+          }
+          if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+            return;
+          }
+          var response = {
+            data: request.responseText,
+            status: request.status,
+            statusText: request.statusText,
+          };
+          resolve(response);
+        }
+        //需要取消的请求
+        if (cancelToken) {
+          //使用 cancel 方法改变 this.promise 状态为 reslove 时触发
+          cancelToken.promise.then(function onCanceled (cancel) {
+            if (!request) {
+              return
+            }
+            //利用 XHR 提供的 abort() 取消未发出的请求
+            request.abort()
+            //将用来包装 XHR 的外部 Promise 状态转为失败
+            reject(cancel)
+            request = null
+          })
+        }
+        request.send()
+      })
+    }
+    /* Cancel */
+    class Cancel {
+      constructor(message){
+        this.message = message;
+      }
+    }
+    /* Cancel Token */
+    class CancelToken {
+      constructor(executor){
+        if (typeof executor !== 'function') {
+          throw new TypeError('executor must be a function.');
+        }
+        //将构造的 Promise 的 resolve 方法赋值给外部的变量 resolvePromise
+        //这样就可以在外部改变 Promise 的状态，也就是 this.promise 的状态
+        let resolvePromise
+        this.promise = new Promise(function promiseExecutor(resolve) {
+          resolvePromise = resolve;
+        });
+
+        let token = this;
+        //执行传入的 executor 方法，将 cancel 方法作为参数传入
+        //这样外部方法 executor 中就可以获取到用来改变 this.promise 状态的 cancel 方法了
+        executor(function cancel(message) {
+          //防止多次调用 cancel
+          if (token.reason) {
+            return;
+          }
+          //生成一个 Cancel 实例，记录 reason 参数
+          token.reason = new Cancel(message);
+          //改变 this.promise 状态
+          resolvePromise(token.reason);
+        });
+      }
+    }
+    /* 用法 */
+    let cancel
+    /* 响应输入事件 */
+    async function handleInput () {
+      if (cancel) {
+        cancel(`取消第 ${index} 个请求`)
+      }
+      index++
+      const { data } = await xhrAdapter(index, new CancelToken(function executor(c) {
+        cancel = c
+      }))
+      document.querySelector('#result').value = `这是第 ${data} 个请求的处理结果`
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" value="" placeholder="连续输入发出异步请求" oninput="handleInput()">
+  <hr>
+  <textarea name="result" id="result" cols="30" rows="10"></textarea>
+  <script>
+    //请求记录
+    let index = 0
+    /* 模拟随机请求 */
+    function mockRequest () {
+      return new Promise((resolve, reject) => {
+        //随机时间
+        let time = Math.random() * 1000
+        //记录当前请求序号
+        let current = ++index
+        console.log(`发出第 ${index} 个模拟请求, ${time} ms 后响应`)
+        //模拟随机响应时间
+        setTimeout(_ => {
+          resolve(current)
+        }, time)
+      })
+    }
+    /* 改造之后的事件 */
+    async function handleInput () {
+      //模拟随用户输入的异步请求
+      const res = await mockRequest()
+      console.log(`响应第 ${res} 个请求`,res);
+      //如果不是最后一个请求 不做任何处理
+      if (res !== index) return
+      document.querySelector('#result').value = `这是第 ${res} 个请求的处理结果`
+    }
+  </script>
+</body>
+</html>

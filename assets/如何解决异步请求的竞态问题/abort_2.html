@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" value="" placeholder="连续输入发出异步请求" oninput="handleInput()">
+  <hr>
+  <textarea name="result" id="result" cols="30" rows="10"></textarea>
+  <script>
+    //请求记录
+    let index = 0
+    /* 封装 XHR */
+    function xhrAdapter (index) {
+      return new Promise(function (resolve, reject) {
+        var request = new XMLHttpRequest();
+        request.open('GET', `http://127.0.0.1:3000/mock?index=${index}`, true)
+        request.onreadystatechange = function handleLoad () {
+          if (!request || request.readyState !== 4) {
+            return;
+          }
+          if (request.status === 0) {
+            return;
+          }
+          var response = {
+            data: request.responseText,
+            status: request.status,
+            statusText: request.statusText,
+          };
+          resolve(response);
+        }
+        console.log(`发送第 ${index} 个请求`);
+        request.send()
+      })
+    }
+    /* 响应输入事件 */
+    async function handleInput () {
+      index++
+      const { data } = await xhrAdapter(index)
+      document.querySelector('#result').value = `这是第 ${data} 个请求的处理结果`
+    }
+  </script>
+</body>
+</html>
