@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" value="" placeholder="连续输入发出异步请求" oninput="handleInput()">
+  <hr>
+  <textarea name="result" id="result" cols="30" rows="10"></textarea>
+  <script>
+    //请求记录
+    let index = 0
+    /* 模拟随机请求 */
+    function fetchAdapter (index, signal) {
+      return fetch(`http://127.0.0.1:3000/mock?index=${index}`, { signal })
+      .then(res => res.json())
+    }
+    let controller
+    /* 响应输入事件 */
+    async function handleInput () {
+      try {
+        if (controller) {
+          controller.abort()
+        }
+        controller = new AbortController();
+        let signal = controller.signal;
+        index++
+        //模拟随用户输入的异步请求
+        const res = await fetchAdapter(index, signal)
+        console.log(`响应第 ${res} 个请求`,res);
+        document.querySelector('#result').value = `这是第 ${res} 个请求的处理结果`
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          console.log(`取消第 ${index-1} 个请求`,error)
+        } else {
+          console.error('普通错误')
+        }
+      }
+    }
+  </script>
+</body>
+</html>
