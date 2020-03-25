@@ -8,7 +8,27 @@
 <body>
   cookie demo
   <script>
-    fetch('http://localhost:8181/api/givemeacookie').then(res => {
+    fetch('http://127.0.0.1:3000/givemeacookie').then(res => {
+      return res.json();
+    }).then(data => {
+      const cookies = document.cookie;
+      console.log('cookies',cookies);
+    }).catch(err => {
+      console.log('err',err);
+    });
+  </script>
+
+
+
+
+
+
+
+
+
+
+  <script>
+    fetch('/api/givemeacookie').then(res => {
       console.log('res.json()',res);
       return res.json();
     }).then(data => {

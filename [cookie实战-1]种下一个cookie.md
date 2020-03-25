@@ -1,10 +1,10 @@
-# [cookie实战-1]种下一个cookie
+# [cookie实战记录-1]种下一个cookie
 
 ## 引子
 
 `cookie` 🍪 ~ 
 
-也是前端实际工作中一定会碰到的（？<a href="[https://github.com/YuArtian/blog/blob/master/%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E7%9A%84%E7%AB%9E%E6%80%81%E9%97%AE%E9%A2%98.md](https://github.com/YuArtian/blog/blob/master/如何解决异步请求的竞态问题.md)">我为什么要说也呢。。。</a>）
+也是前端实际工作中一定会碰到的（哎？<a href="[https://github.com/YuArtian/blog/blob/master/%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E7%9A%84%E7%AB%9E%E6%80%81%E9%97%AE%E9%A2%98.md](https://github.com/YuArtian/blog/blob/master/如何解决异步请求的竞态问题.md)">为什么要说也呢。。。</a>）
 
 而且由于前一阵 `Chrome` 的更新改了关于 `cookie` `sameSite` 属性的默认值，对一些项目会有不同程度的影响
 
@@ -16,9 +16,44 @@ pps: 写文章没想过教别人什么，就是想把书本上理论上的东西
 
 把实验过程和结果展示出来，如果有不正确不科学的地方欢迎指出，并不一定改正
 
-## 关于`cookie`
+## 关于 `cookie`
 
-首先， `cookie` 是什么 ----> <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Cookies">来自MDN</a>
+`cookie` 有别与其他存储方式，虽然存储在客户端，但要由服务器设置。也主要用于和服务器通信
+
+`cookie` 主要用于以下三个方面：
+
+- 会话状态管理（如用户登录状态、购物车、游戏分数或其它需要记录的信息）
+- 个性化设置（如用户自定义设置、主题等）
+- 浏览器行为跟踪（如跟踪分析用户行为等）
+
+创建 `cookie` 方式：
+
+- 由服务端设置，在响应中设置  `Set-Cookie` 响应头部
+- 由客户端设置，使用 `document.cookie` 来读取和写入
+
+创建成功之后，每次请求都会通过 `Cookie ` 字段，将对应域名下的  `cookie` 带给服务器
+
+`cookie `是 `key=value `的格式存储，可以通过设置额外的属性，声明一条 `cookie` 的作用域，有效时间等。这些设置都统一写在`Set-Cookie` 字段中，形如：
+
+`Set-Cookie: key=value; Path=/; Domain=xx.com; Max-Age=10086;`
+
+
+
+> 更加详细的内容 ----> <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Cookies">来自MDN</a>
+
+## `cookie`与IP
+
+虽然 `cookie` 是基于域名的，但是也可以在一个ip地址下设置 `cookie`
+
+但是这要求满足同源（协议，地址和端口号都必须相同）
+
+不同源的话是不生效的
+
+接下来就试验一下，由于也没有服务器，就用本地ip了(希望不会有什么差别)
+
+搞一个 `index.html` 发请求，`app.js` 接受请求，试图种下`cookie`
+
+
 
 
 
