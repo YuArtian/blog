@@ -8,7 +8,9 @@
 <body>
   cookie demo
   <script>
-    fetch('http://127.0.0.1:3000/givemeacookie').then(res => {
+    fetch('http://127.0.0.1:3000/givemeacookie',{
+      credentials: 'include'
+    }).then(res => {
       return res.json();
     }).then(data => {
       const cookies = document.cookie;
@@ -16,19 +18,17 @@
     }).catch(err => {
       console.log('err',err);
     });
+
+    // var xhr = new XMLHttpRequest();
+    // xhr.open('GET', 'http://127.0.0.1:3000/givemeacookie');
+    // xhr.withCredentials = true;
+    // xhr.send();
+
   </script>
-
-
-
-
-
-
-
-
-
-
   <!-- <script>
-    fetch('/api/givemeacookie').then(res => {
+    fetch('/api/givemeacookie', {
+      credentials: 'include'
+    }).then(res => {
       console.log('res.json()',res);
       return res.json();
     }).then(data => {

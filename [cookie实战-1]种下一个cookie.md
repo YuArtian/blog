@@ -85,17 +85,31 @@ pps: 写文章没想过教别人什么，就是想把书本上理论上的东西
 >
 > 直接 `brew search nginx` 简单又省事
 
-> 启动 `ngnix` 可能会出现
+> 启动 `ngnix` 时可能会出现
 >
 >  `nginx: [error] open() "/usr/local/var/run/nginx.pid" failed (2: No such file or directory)`
 >
-> 不要紧张，不要害pia，找到你的nginx.conf的文件夹目录，然后运行这个
-> `nginx -c /usr/local/etc/nginx/nginx.conf` 命令，
+> 不要紧张，不要害pia，找到你的 nginx.conf 的文件夹目录，mac 默认在 ` /usr/local/etc/nginx` 下，然后运行
+> `nginx -c /usr/local/etc/nginx/nginx.conf` 
 > 再运行`nginx -s reload`，就可以了
 
 
 
 `ngnix` 配置如下图
 
-<img src=""/>
+<img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/4.png?raw=true"/>
+
+有了 `nginx` 我们就不用 `http-server` 了，修改重启后直接访问 `127.0.0.1:8888`
+
+当然，要记得 `index.html` 中的请求地址也要改成
+
+```javascript
+fetch('/api/givemeacookie').then(...)
+```
+
+这样，通过 `nginx` 就变成同源的了，我们再来操作一下
+
+
+
+
 
