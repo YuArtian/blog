@@ -51,7 +51,9 @@ pps: 写文章没想过教别人什么，就是想把书本上理论上的东西
 
 接下来就试验一下，由于也没有服务器，就用本地ip了(希望不会有什么差别)
 
-搞一个 `index.html` 发请求，`app.js` 接受请求，试图种下`cookie` 。
+搞一个 `index.html` 发请求，`app.js` 接受请求，试图种下`cookie` 
+
+#### 失败案例
 
 `index.html`
 
@@ -67,5 +69,33 @@ pps: 写文章没想过教别人什么，就是想把书本上理论上的东西
 
 打开 `127.0.0.1:8080` 可以看到我们的页面啦，然而你会发现，虽然响应中有了 `Set-Cookie` 字段，`cookie` 还是没有种成功的
 
+<img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/3.gif?raw=true"/>
 
+
+
+#### 成功案例
+
+之所以失败了，是因为在浏览器上我们的地址是 `127.0.0.1:8080` ，然而携带 `Set-Cookie` 头部的响应却来自 `127.0.0.1:3000` 。端口不同，所以不是同源的，`cookie` 就没种上
+
+那如果满足同源的条件，`cookie` 能不能在 ip 中使用呢？
+
+为了达到同源的目的，我们使用 `ngnix` 进行代理
+
+> Mac 的话还是推荐使用 `homebrew` 安装，自己解压编译什么的可太烦了
+>
+> 直接 `brew search nginx` 简单又省事
+
+> 启动 `ngnix` 可能会出现
+>
+>  `nginx: [error] open() "/usr/local/var/run/nginx.pid" failed (2: No such file or directory)`
+>
+> 不要紧张，不要害pia，找到你的nginx.conf的文件夹目录，然后运行这个
+> `nginx -c /usr/local/etc/nginx/nginx.conf` 命令，
+> 再运行`nginx -s reload`，就可以了
+
+
+
+`ngnix` 配置如下图
+
+<img src=""/>
 
