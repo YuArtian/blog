@@ -51,9 +51,21 @@ pps: 写文章没想过教别人什么，就是想把书本上理论上的东西
 
 接下来就试验一下，由于也没有服务器，就用本地ip了(希望不会有什么差别)
 
-搞一个 `index.html` 发请求，`app.js` 接受请求，试图种下`cookie`
+搞一个 `index.html` 发请求，`app.js` 接受请求，试图种下`cookie` 。
 
+`index.html`
 
+<img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/1.png?raw=true" />
+
+`app.js`
+
+<img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/2.png?raw=true"/>
+
+接下来，我们直接点开 `index.html` 是不行的。。那就变成 `file://...` 了，总之，我们这里需要起一个服务
+
+我这里为了求简单（主要是我电脑上就有）用了 <a href="https://github.com/http-party/http-server#readme">http-server</a> 。在 `index.html` 目录终端输入 `http-server` 命令就可以了
+
+打开 `127.0.0.1:8080` 可以看到我们的页面啦，然而你会发现，虽然响应中有了 `Set-Cookie` 字段，`cookie` 还是没有种成功的
 
 
 
