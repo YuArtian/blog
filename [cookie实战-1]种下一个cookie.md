@@ -16,7 +16,7 @@ pps: 写文章没想过教别人什么，就是想把书本上理论上的东西
 
 把实验过程和结果展示出来，如果有不正确不科学的地方欢迎指出，并不一定改正
 
-## 关于 `cookie`
+## 关于 cookie
 
 `cookie` 有别与其他存储方式，虽然存储在客户端，但要由服务器设置。也主要用于和服务器通信
 
@@ -41,19 +41,21 @@ pps: 写文章没想过教别人什么，就是想把书本上理论上的东西
 
 > 更加详细的内容 ----> <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Cookies">来自MDN</a>
 
-## `cookie`与IP
+## 同源才能种下 cookie
 
-虽然 `cookie` 是基于域名的，但是也可以在一个ip地址下设置 `cookie`
+出于安全考虑，浏览器采用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/Security/Same-origin_policy">同源策略</a>  `cookie` 的写入要满足同源才行
 
-但是这要求满足同源（协议，地址和端口号都必须相同）
+也就是说，当前页面 和  有`Set-Cookie`  头的响应必须满足同源（协议，地址和端口号都必须相同）
 
-不同源的话是不生效的
-
-接下来就试验一下，由于也没有服务器，就用本地ip了(希望不会有什么差别)
-
-搞一个 `index.html` 发请求，`app.js` 接受请求，试图种下`cookie` 
+我们先试验一下不同源的失败案例
 
 #### 失败案例
+
+为了覆盖全面，我们分别实验 `ip` 地址 和 域名 两种情况
+
+无论如何，我们都要搞一个 `index.html` 发请求，`app.js` 作为服务端接受请求，试图种下`cookie` 
+
+代码如下：
 
 `index.html`
 
@@ -63,6 +65,10 @@ pps: 写文章没想过教别人什么，就是想把书本上理论上的东西
 
 <img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/2.png?raw=true"/>
 
+
+
+##### 使用 ip 地址
+
 接下来，我们直接点开 `index.html` 是不行的。。那就变成 `file://...` 了，总之，我们这里需要起一个服务
 
 我这里为了求简单（主要是我电脑上就有）用了 <a href="https://github.com/http-party/http-server#readme">http-server</a> 。在 `index.html` 目录终端输入 `http-server` 命令就可以了
@@ -71,11 +77,38 @@ pps: 写文章没想过教别人什么，就是想把书本上理论上的东西
 
 <img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/3.gif?raw=true"/>
 
+之所以失败了，是因为在浏览器上我们的地址是 `127.0.0.1:8080` ，然而携带 `Set-Cookie` 头部的响应却来自 `127.0.0.1:3000` 。端口不同，所以不是同源的，`cookie` 就没种上
+
+##### 使用域名
+
+为了能用得起域名。。。我们可以改本地 `host` 配置为
+
+```javascript
+# cookie
+127.0.0.1 a.com
+```
+
+`http-server` 启动命令改为
+
+```javascript
+http-server -p 80
+```
+
+在地址栏输入 `a.com` 就可以访问我们的 `index.html` 了，当然请求也要变一下
+
+```javascript
+fetch('http://a.com:3000/givemeacookie').then(...)
+```
+
+当然结果也一如既往
+
+<img src="" />
+
 
 
 #### 成功案例
 
-之所以失败了，是因为在浏览器上我们的地址是 `127.0.0.1:8080` ，然而携带 `Set-Cookie` 头部的响应却来自 `127.0.0.1:3000` 。端口不同，所以不是同源的，`cookie` 就没种上
+
 
 那如果满足同源的条件，`cookie` 能不能在 ip 中使用呢？
 
