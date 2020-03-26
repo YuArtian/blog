@@ -9,8 +9,6 @@ const server = http.createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Access-Control-Allow-Origin', '*');
-  // res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');
-  // res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   const { pathname } = url.parse(req.url, true);
   if (pathname === '/givemeacookie') {
@@ -19,6 +17,7 @@ const server = http.createServer((req, res) => {
     res.setHeader('set-cookie', ['cookie=aCookieFromServer']);
     res.end(JSON.stringify({result: 'cookie has send !'}));
   } else {
+    res.setHeader('set-cookie', ['cookie=a_cookie_from_server']);
     res.end('HELLO');
   }
 });
@@ -26,3 +25,7 @@ const server = http.createServer((req, res) => {
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+
+// res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');
+// res.setHeader('Access-Control-Allow-Credentials', 'true');

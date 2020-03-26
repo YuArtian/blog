@@ -37,8 +37,6 @@ pps: 写文章没想过教别人什么，就是想把书本上理论上的东西
 
 `Set-Cookie: key=value; Path=/; Domain=xx.com; Max-Age=10086;`
 
-
-
 > 更加详细的内容 ----> <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Cookies">来自MDN</a>
 
 ## 同源才能种下 cookie
@@ -102,15 +100,25 @@ fetch('http://a.com:3000/givemeacookie').then(...)
 
 当然结果也一如既往
 
-<img src="" />
+<img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/5.gif?raw=true" />
+
+## 同源下的 cookie 设置
+
+想种 `cookie` 不同源肯定是不行了
+
+我们先来看一下同源下的成功案例
+
+#### 服务端渲染
+
+之前的例子都是前后端分离的情况，所以不同源是肯定的了。但是由服务器直出的页面就不一样了
+
+这边只要简单的改一下 `app.js` 就行了
 
 
 
-#### 成功案例
+#### 跨域设置 cookie
 
 
-
-那如果满足同源的条件，`cookie` 能不能在 ip 中使用呢？
 
 为了达到同源的目的，我们使用 `ngnix` 进行代理
 
