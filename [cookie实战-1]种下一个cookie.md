@@ -104,9 +104,9 @@ fetch('http://a.com:3000/givemeacookie').then(...)
 
 ## 同源的 cookie 设置
 
-想种 `cookie` 不同源肯定是不行了
+想种 `cookie` 不同源肯定是不行了（吗？。。。）
 
-我们先来看一下同源下的成功案例
+总之我们先来看同源下的成功案例
 
 #### 服务端渲染
 
@@ -200,5 +200,20 @@ Access-Control-Allow-Credentials: true
 
 
 
-我们直接启动 `http-server -p 80` 访问 `127.0.0.1`，可以看到
+我们直接启动 `http-server -p 80` 访问 `127.0.0.1`，可以看到：
 
+<img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/11.gif?raw=true" />
+
+
+
+另外，由于 `Access-Control-Allow-Origin` 只允许单一域名，在实际的使用中服务器需要维护一个 `Origin` 列表。验证请求头的 `Origin` 字段是否合法，通过验证之后可以直接将其设置为 ``Access-Control-Allow-Origin`` 的值。
+
+这样动态设置 `Access-Control-Allow-Origin`，就可以满足多个域名的情况了
+
+## 结尾
+
+到此，我们已经尝试了各种姿势种 `cookie`。无论跨不跨域 `cookie` 总是有办法使用的
+
+后面可能会更加拓展的实验 `cookie` 的其他应用
+
+诶嘿。
