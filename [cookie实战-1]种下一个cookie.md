@@ -192,7 +192,13 @@ res.setHeader('set-cookie', ['cookie=aCookieFromServer; Path=/']);
 Access-Control-Allow-Credentials: true
 ```
 
-除了这个之外，`CORS` 同时要求 `Access-Control-Allow-Origin` 指定的域不能使用通配符`*` ，而只能指定单一域名（也就是 `cookie` 所在域名）
+除了这个之外，同时还要求 `Access-Control-Allow-Origin` 指定的域不能使用通配符`*` ，而只能指定单一域名（也就是 `cookie` 所在域名）
 
-代码如下：
+那么修改代码如下：（由于用了`CORS`，这里就不需要`nginx`了）
+
+<img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/10.png?raw=true" />
+
+
+
+我们直接启动 `http-server -p 80` 访问 `127.0.0.1`，可以看到
 
