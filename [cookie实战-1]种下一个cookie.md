@@ -118,13 +118,17 @@ fetch('http://a.com:3000/givemeacookie').then(...)
 
 这次直接访问 `a.com:3000`
 
+<img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/7.gif?raw=true"/>
 
+总算是种上去了。。
 
-#### 跨域设置 cookie
+然而，使用服务端虽然很方便，但就为了 `cookie` 也不至于把项目整个改了
 
+#### nginx 代理
 
+想要达到同源的目的，又想前后端分离，我们就可以用代理网关帮我们转发一下，把浏览器骗过去。。。
 
-为了达到同源的目的，我们使用 `ngnix` 进行代理
+先安装一下 `nginx`
 
 > Mac 的话还是推荐使用 `homebrew` 安装，自己解压编译什么的可太烦了
 >
@@ -132,7 +136,7 @@ fetch('http://a.com:3000/givemeacookie').then(...)
 
 > 启动 `ngnix` 时可能会出现
 >
->  `nginx: [error] open() "/usr/local/var/run/nginx.pid" failed (2: No such file or directory)`
+> `nginx: [error] open() "/usr/local/var/run/nginx.pid" failed (2: No such file or directory)`
 >
 > 不要紧张，不要害pia，找到你的 nginx.conf 的文件夹目录，mac 默认在 ` /usr/local/etc/nginx` 下，然后运行
 > `nginx -c /usr/local/etc/nginx/nginx.conf` 
@@ -140,7 +144,7 @@ fetch('http://a.com:3000/givemeacookie').then(...)
 
 
 
-`ngnix` 配置如下图
+找到 `nginx.conf` 配置文件位置，改写 `ngnix` 配置如下图：
 
 <img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/4.png?raw=true"/>
 
@@ -152,9 +156,22 @@ fetch('http://a.com:3000/givemeacookie').then(...)
 fetch('/api/givemeacookie').then(...)
 ```
 
-这样，通过 `nginx` 就变成同源的了，我们再来操作一下
+这样，通过 `nginx` 就变成同源的了，这里要记得把 `cookie` 的 `path` 设置一下
+
+```javascript
+res.setHeader('set-cookie', ['cookie=aCookieFromServer; Path=/']);
+```
+
+否则在前端是取不到相应的 `cookie` 的
 
 
 
+
+
+
+
+
+
+#### 跨域设置 cookie
 
 

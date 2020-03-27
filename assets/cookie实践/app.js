@@ -9,12 +9,14 @@ const server = http.createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Access-Control-Allow-Origin', '*');
+  // res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   const { pathname } = url.parse(req.url, true);
   if (pathname === '/givemeacookie') {
     console.log('接到请求，种下cookie');
     console.log('req header',req.headers);
-    res.setHeader('set-cookie', ['cookie=aCookieFromServer']);
+    res.setHeader('set-cookie', ['cookie=aCookieFromServer; Path=/']);
+    // res.setHeader('set-cookie', ['cookie=aCookieFromServer']);
     res.end(JSON.stringify({result: 'cookie has send !'}));
   } else {
     res.setHeader('set-cookie', ['cookie=a_cookie_from_server']);

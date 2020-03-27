@@ -25,20 +25,18 @@
     // xhr.send();
 
 
-    fetch('http://a.com:3000/givemeacookie').then(res => {
-      return res.json();
-    }).then(data => {
-      const cookies = document.cookie;
-      console.log('cookies',cookies);
-    }).catch(err => {
-      console.log('err',err);
-    });
+    // fetch('http://a.com:3000/givemeacookie').then(res => {
+    //   return res.json();
+    // }).then(data => {
+    //   const cookies = document.cookie;
+    //   console.log('cookies',cookies);
+    // }).catch(err => {
+    //   console.log('err',err);
+    // });
 
   </script>
-  <!-- <script>
-    fetch('/api/givemeacookie', {
-      credentials: 'include'
-    }).then(res => {
+  <script>
+    fetch('/api/givemeacookie').then(res => {
       console.log('res.json()',res);
       return res.json();
     }).then(data => {
@@ -48,6 +46,6 @@
     }).catch(err => {
       console.log('err',err);
     });
-  </script> -->
+  </script>
 </body>
 </html>
