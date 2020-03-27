@@ -1,5 +1,7 @@
 # [cookie实战记录-1]种下一个cookie
 
+<img src="https://github.com/YuArtian/blog/blob/master/img/%E6%8F%92%E5%9B%BE/WechatIMG40.jpeg?raw=true" />
+
 ## 引子
 
 `cookie` 🍪 ~ 
@@ -8,13 +10,15 @@
 
 而且由于前一阵 `Chrome` 的更新改了关于 `cookie` `sameSite` 属性的默认值，对一些项目会有不同程度的影响
 
-所以趁机整理一下 `cookie` 相关的东西
+所以趁机整理一下 `cookie` 相关的东西，把实验的过程和结果展示出来
 
-ps: 这应该是会做成一个系列文章。总之就是比较懒，所以一点一点挤牙膏。不定时更新
+把实验过程和结果展示出来，如果有不正确不科学的地方欢迎指出
 
-pps: 写文章没想过教别人什么，就是想把书本上理论上的东西实践一下，其实就是做个实验记录
+###### 免责声明
 
-把实验过程和结果展示出来，如果有不正确不科学的地方欢迎指出，并不一定改正
+作者学艺不精又懒的要死，本文如有错误 概不负责 欢迎指出 随缘改正
+
+##### 欢迎来我git  <a href="https://github.com/YuArtian/blog">github.com/YuArtian/blog</a>
 
 ## 关于 cookie
 
@@ -39,7 +43,7 @@ pps: 写文章没想过教别人什么，就是想把书本上理论上的东西
 
 > 更加详细的内容 ----> <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Cookies">来自MDN</a>
 
-## 同源才能种下 cookie
+## 同源策略 与 cookie 
 
 出于安全考虑，浏览器采用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/Security/Same-origin_policy">同源策略</a>  `cookie` 的写入要满足同源才行
 
@@ -217,3 +221,4 @@ Access-Control-Allow-Credentials: true
 后面可能会更加拓展的实验 `cookie` 的其他应用
 
 诶嘿。
+
