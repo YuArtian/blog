@@ -102,7 +102,7 @@ fetch('http://a.com:3000/givemeacookie').then(...)
 
 <img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/5.gif?raw=true" />
 
-## 同源下的 cookie 设置
+## 同源的 cookie 设置
 
 想种 `cookie` 不同源肯定是不行了
 
@@ -164,14 +164,23 @@ res.setHeader('set-cookie', ['cookie=aCookieFromServer; Path=/']);
 
 否则在前端是取不到相应的 `cookie` 的
 
+<img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/8.gif?raw=true" />
 
+可以看到 `cookie` 已经设置成功。在前端可以读取，在后续的请求中也会带上 `Cookie` 请求头，后端也能接受到 `cookie` 的内容
 
+## 跨域 cookie 的发送和接收
 
+跨域一定就不能使用 `cookie` 么？
 
+使用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS"> `CORS` （跨域资源共享）</a>就可以突破同源的限制来使用 `cookie` 了
 
+但是这需要服务端和客户端两方面的配合
 
+首先，客户端在发送请求时：
 
+如果使用的是 `XMLHttpRequest` 需要配置 `xhr.withCredentials = true;`
 
-#### 跨域设置 cookie
+使用 `fetch` 需要配置 `credentials: 'include'`
 
+具体代码如下图：
 

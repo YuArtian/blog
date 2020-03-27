@@ -8,7 +8,8 @@
 <body>
   cookie demo
   <script>
-    /* fetch('http://127.0.0.1:3000/givemeacookie',{
+    /* CORS fetch */
+    fetch('http://127.0.0.1:3000/givemeacookie',{
       credentials: 'include'
     }).then(res => {
       return res.json();
@@ -17,12 +18,17 @@
       console.log('cookies',cookies);
     }).catch(err => {
       console.log('err',err);
-    }); */
-
+    });
+    /* CORS XHR */
     // var xhr = new XMLHttpRequest();
     // xhr.open('GET', 'http://127.0.0.1:3000/givemeacookie');
     // xhr.withCredentials = true;
     // xhr.send();
+
+
+
+
+
 
 
     // fetch('http://a.com:3000/givemeacookie').then(res => {
@@ -35,7 +41,7 @@
     // });
 
   </script>
-  <script>
+  <!-- <script>
     fetch('/api/givemeacookie').then(res => {
       console.log('res.json()',res);
       return res.json();
@@ -46,6 +52,6 @@
     }).catch(err => {
       console.log('err',err);
     });
-  </script>
+  </script> -->
 </body>
 </html>
