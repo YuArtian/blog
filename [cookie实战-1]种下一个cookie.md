@@ -184,3 +184,15 @@ res.setHeader('set-cookie', ['cookie=aCookieFromServer; Path=/']);
 
 具体代码如下图：
 
+<img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/9.png?raw=true"/>
+
+相应的，服务端要增加响应头
+
+```javascript
+Access-Control-Allow-Credentials: true
+```
+
+除了这个之外，`CORS` 同时要求 `Access-Control-Allow-Origin` 指定的域不能使用通配符`*` ，而只能指定单一域名（也就是 `cookie` 所在域名）
+
+代码如下：
+
