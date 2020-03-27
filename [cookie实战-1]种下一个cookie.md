@@ -110,9 +110,13 @@ fetch('http://a.com:3000/givemeacookie').then(...)
 
 #### 服务端渲染
 
-之前的例子都是前后端分离的情况，所以不同源是肯定的了。但是由服务器直出的页面就不一样了
+之前的例子都是前后端分离的情况，所以不同源是肯定的了。如果是由服务器直出的页面就可以了
 
-这边只要简单的改一下 `app.js` 就行了
+这边只要简单的改一下 `app.js` 
+
+<img src="https://github.com/YuArtian/blog/blob/master/img/cookie%E5%AE%9E%E6%88%98/%E7%A7%8D%E4%B8%80%E4%B8%AAcookie/6.png?raw=true" />
+
+这次直接访问 `a.com:3000`
 
 
 
