@@ -41,6 +41,8 @@
 
 ### 🏷 ---- 随手记 ----
 - <a href="https://github.com/YuArtian/blog/issues/19">随手记 --- 权限系统中的替换节点问题</a>
+- <a href="https://github.com/YuArtian/blog/blob/master/Javascript%20%E5%92%8C%20JScript%20%E5%92%8C%20ECMAScript%20%E5%92%8C%20ECMA-262%20%E5%92%8C%20TC39%E3%80%82%E3%80%82%E3%80%82.md">随手记 --- Javascript 和 JScript 和 ECMAScript 和 ECMA-262 和 TC39。。。
+</a>
 
 ### ☠ ---- 下面是我的面经或者说是凉经 T。T ----
 但是那并不表示下面这些问题我一个也没打上来<br><br>
