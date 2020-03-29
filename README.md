@@ -42,7 +42,7 @@
 ### 🏷 ---- 随手记 ----
 - <a href="https://github.com/YuArtian/blog/issues/19">随手记 --- 权限系统中的替换节点问题</a>
 - <a href="https://github.com/YuArtian/blog/blob/master/Javascript%20%E5%92%8C%20JScript%20%E5%92%8C%20ECMAScript%20%E5%92%8C%20ECMA-262%20%E5%92%8C%20TC39%E3%80%82%E3%80%82%E3%80%82.md">随手记 --- Javascript 和 JScript 和 ECMAScript 和 ECMA-262 和 TC39。。。
-</a>
+</a><br>
 - <a href="https://github.com/YuArtian/blog/blob/master/ECMA%E7%9A%84%E5%90%84%E7%89%88%E6%9C%AC%E8%A7%84%E8%8C%83.md">随手记 --- ECMA的各版本规范</a>
 
 ### ☠ ---- 下面是我的面经或者说是凉经 T。T ----
