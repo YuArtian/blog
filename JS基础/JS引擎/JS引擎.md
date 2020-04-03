@@ -1,6 +1,12 @@
 # JS引擎
 
-JS引擎负责编译代码，执行代码，分配内存以及垃圾回收
+在运行C、C++以及Java等程序之前，需要进行编译，不能直接执行源码
+
+但对于JavaScript来说，我们可以直接执行源码(比如：node xx.js)，它是在运行的时候先编译再执行，这种方式被称为即时编译(Just-in-time compilation)，简称为 JIT
+
+JS引擎就是 JIT 编译器。负责编译代码，执行代码，分配内存以及垃圾回收
+
+**JavaScirpt引擎可以将JS代码编译为不同CPU(Intel, ARM以及MIPS等)对应的汇编代码**
 
 虽然浏览器非常多，但是主流的JavaScirpt引擎其实很少，毕竟开发一个JavaScript引擎是一件非常复杂的事情。比较出名的JS引擎有这些：
 
@@ -29,7 +35,9 @@ V8由许多子模块构成，其中这4个模块是最重要的：
 
 其流程图如下：
 
-<img src=""/>
+<img src="https://github.com/YuArtian/blog/blob/master/JS%E5%9F%BA%E7%A1%80/JS%E5%BC%95%E6%93%8E/1.jpg?raw=true"/>
+
+<img src="" />
 
 简单地说，Parser将JS源码转换为AST，然后Ignition将AST转换为Bytecode，最后TurboFan将Bytecode转换为经过优化的Machine Code(实际上是汇编代码)。
 
@@ -39,15 +47,13 @@ V8由许多子模块构成，其中这4个模块是最重要的：
 
 图片中的红线是逆向的，这的确有点奇怪，Optimized Machine Code会被还原为Bytecode，这个过程叫做Deoptimization。这是因为Ignition收集的信息可能是错误的，比如add函数的参数之前是整数，后来又变成了字符串。生成的Optimized Machine Code已经假定add函数的参数是整数，那当然是错误的，于是需要进行Deoptimization（去优化）
 
-
-
 ### Bytecode 与 Machine Code
 
 `Bytecode` 某种程度上就是汇编语言，只是它没有对应特定的CPU，或者说它对应的是虚拟的CPU
 
 这样的话，生成Bytecode时简单很多，无需为不同的CPU生产不同的代码
 
-要知道，V8支持9种不同的CPU，引入一个中间层Bytecode，可以简化V8的编译流程，提高可扩展性
+要知道，V8支持9种不同的CPU，引入一个中间层 Bytecode，可以简化V8的编译流程，提高可扩展性
 
 Node 中输出 bytecode
 
@@ -57,9 +63,13 @@ node --print-bytecode xxx.js
 
 `Machine Code` 其实是汇编代码，可读性差很多。而且，机器的CPU类型不一样的话，生成的汇编代码也不一样
 
-<img src=""/>
+<img src="https://github.com/YuArtian/blog/blob/master/JS%E5%9F%BA%E7%A1%80/JS%E5%BC%95%E6%93%8E/2.jpg?raw=true"/>
 
+### 编译器（TurboFan）优化
 
+优化代码编译过程，生成 `Machine Code` 。主要是根据 解释器 提供的 类型信息等优化信息，来简化代码执行流程。遇到不能优化的情况时，则 `Deoptimize` 为 bytecode 返回给 解释器 执行
+
+由于 优化 是根据变量类型来决定的，所以JS代码中变量的类型变来变去，是会给V8引擎增加不少麻烦的，为了提高性能，我们可以尽量不要去改变变量的类型
 
 
 
