@@ -22,7 +22,7 @@ JS引擎就是 JIT 编译器。负责编译代码，执行代码，分配内存�
 
 V8由许多子模块构成，其中这4个模块是最重要的：
 
-- [Parser](https://v8.dev/blog/scanner)：负责将 JavaScript 源码转换为Abstract Syntax Tree (AST)
+- [Parser](https://v8.dev/blog/scanner)：负责将 JavaScript 源码转换为 Abstract Syntax Tree (AST)
 - [Ignition](https://v8.dev/docs/ignition)：interpreter，即解释器，负责将 AST 转换为 Bytecode，解释执行 Bytecode；同时收集 TurboFan优化编译所需的信息，比如函数参数的类型；
 - [TurboFan](https://v8.dev/docs/turbofan)：compiler，即编译器，利用 Ignitio 所收集的类型信息，将 Bytecode 转换为优化的汇编代码；
 - [Orinoco](https://v8.dev/blog/trash-talk)：garbage collector，[垃圾回收](https://blog.fundebug.com/2019/07/03/javascript-garbage-collection/)模块，负责将程序不再需要的内存空间回收；
@@ -37,9 +37,11 @@ V8由许多子模块构成，其中这4个模块是最重要的：
 
 <img src="https://github.com/YuArtian/blog/blob/master/JS%E5%9F%BA%E7%A1%80/JS%E5%BC%95%E6%93%8E/1.jpg?raw=true"/>
 
-<img src="" />
+<img src="https://github.com/YuArtian/blog/blob/master/JS%E5%9F%BA%E7%A1%80/JS%E5%BC%95%E6%93%8E/3.png?raw=true" />
 
-简单地说，Parser将JS源码转换为AST，然后Ignition将AST转换为Bytecode，最后TurboFan将Bytecode转换为经过优化的Machine Code(实际上是汇编代码)。
+
+
+简单地说，Parser将JS源码转换为AST，然后Ignition将AST转换为Bytecode，最后TurboFan将Bytecode转换为经过优化的 Machine Code (实际上是汇编代码)。
 
 - 如果函数没有被调用，则V8不会去编译它。
 - 如果函数只被调用1次，则 Ignition 将其编译 Bytecode 就直接解释执行了。TurboFan 不会进行优化编译，因为它需要 Ignition 收集函数执行时的类型信息。这就要求函数至少需要执行1次，TurboFan才有可能进行优化编译。
@@ -64,6 +66,33 @@ node --print-bytecode xxx.js
 `Machine Code` 其实是汇编代码，可读性差很多。而且，机器的CPU类型不一样的话，生成的汇编代码也不一样
 
 <img src="https://github.com/YuArtian/blog/blob/master/JS%E5%9F%BA%E7%A1%80/JS%E5%BC%95%E6%93%8E/2.jpg?raw=true"/>
+
+### 分析（Parser）
+
+#### 词法分析（Scanner）
+
+JS 文件只是一个源码，机器是无法执行的，词法分析 就是把源码的字符串分割出来，生成一系列的 token
+
+<img src=""/>
+
+#### 语法分析（Parser）
+
+词法分析完后，接下来的阶段就是进行语法分析。语法分析语法分析的输入就是词法分析的输出，输出是AST抽象语法树。当程序出现语法错误的时候，V8在语法分析阶段抛出异常
+
+<img src=""/>
+
+### 解析器（Ignition）
+
+解析器 解析 AST 生成字节码（bytecode）
+
+V8 字节码：
+
+1.  每个字节码指定其输入和输出作为寄存器操作数
+2.  Ignition 使用registers寄存器 r0，r1，r2... 和累加器寄存器（accumulator register）
+3.  registers寄存器：函数参数和局部变量保存在用户可见的寄存器中
+4. 累加器：是非用户可见寄存器，用于保存中间结果
+
+
 
 ### 编译器（TurboFan）优化
 
