@@ -73,17 +73,17 @@ node --print-bytecode xxx.js
 
 JS 文件只是一个源码，机器是无法执行的，词法分析 就是把源码的字符串分割出来，生成一系列的 token
 
-<img src=""/>
+<img src="https://github.com/YuArtian/blog/blob/master/JS%E5%9F%BA%E7%A1%80/JS%E5%BC%95%E6%93%8E/4.png?raw=true"/>
 
 #### 语法分析（Parser）
 
 词法分析完后，接下来的阶段就是进行语法分析。语法分析语法分析的输入就是词法分析的输出，输出是AST抽象语法树。当程序出现语法错误的时候，V8在语法分析阶段抛出异常
 
-<img src=""/>
+<img src="https://github.com/YuArtian/blog/blob/master/JS%E5%9F%BA%E7%A1%80/JS%E5%BC%95%E6%93%8E/5.png?raw=true"/>
 
 ### 解析器（Ignition）
 
-解析器 解析 AST 生成字节码（bytecode）
+解析器 解析 AST 生成字节码（bytecode），并解释执行字节码
 
 V8 字节码：
 
@@ -92,7 +92,7 @@ V8 字节码：
 3.  registers寄存器：函数参数和局部变量保存在用户可见的寄存器中
 4. 累加器：是非用户可见寄存器，用于保存中间结果
 
-
+执行期间，会将多次执行的函数标记为 `HotSpot`（热点代码） ，后台的编译器  `TurboFan` 编译成高效的 机器码。但再次执行这段代码时，只需要执行机器码就可以了。
 
 ### 编译器（TurboFan）优化
 
