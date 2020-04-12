@@ -23,7 +23,8 @@
 帮助<del>自己</del>大家梳理一些基础的知识，省得面试复习的时候没底儿哈。哈。。哈。。。
 还有没补全的部分，我会一直更新哒~<br>
 🗺️ 知识地图 🗺️<br>
-<a href="https://github.com/YuArtian/blog/blob/master/Map/map.md">Map</a>
+<a href="https://github.com/YuArtian/blog/blob/master/Map/map.md">Map</a><br>
+<del>Xmind或许还是太麻烦了</del><br>
 <del>概览图 --->(详情请自行<a href='https://github.com/YuArtian/blog/blob/master/%E5%89%8D%E7%AB%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE.xmind'>下载</a> 前端基础知识思维导图.xmind)</del>
 
 ### 🕯 ---- 博客内容 ----
