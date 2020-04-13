@@ -457,7 +457,7 @@ Sec-WebSocket-Extensions: superspeed, colormode; depth=16
 
 ##### Sec-WebSocket-Protocol
 
-指定的一个或多个的 WebSocket 子协议，按优先级顺序
+是一个用户定义的字符串，用来区分相同URL下，不同的服务所需要的协议
 
 ##### Sec-WebSocket-Version
 
@@ -467,9 +467,19 @@ Sec-WebSocket-Extensions: superspeed, colormode; depth=16
 
 ## WebSocket
 
+> WebSocket 是什么原理？为什么可以实现持久连接？ - Ovear的回答 - 知乎 https://www.zhihu.com/question/20215561/answer/40316953
+
+
+
+Websocket是一个**持久化**的协议，相对于HTTP这种**非持久**的协议来说
+
+Websocket是基于HTTP协议的，或者说**借用**了HTTP的协议来完成一部分握手
+
+
+
 ### [升级到WebSocket](#升级到WebSocket)
 
-
+### 
 
 ## 请求分析（Chrome devtool）
 
