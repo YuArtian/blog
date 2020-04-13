@@ -6,17 +6,67 @@
 
 ## 基础
 
+### 代码执行
+
+
+
 ### 语句
 
+<img src="https://github.com/YuArtian/blog/blob/master/Map/yuju_1.png?raw=true"/>
 
+<img src="https://github.com/YuArtian/blog/blob/master/Map/yuju_2.jpg?raw=true"/>
 
-### let const var
+#### 表达式
 
-#### 不存在变量提升
+https://time.geekbang.org/column/article/88827
+
+##### 连续赋值
+
+```
+a = b = c = d
+```
+
+向右结合，等价于
+
+```
+a = (b = (c = d))
+```
+
+也就是说，先把 d 的结果赋值给 c，再把整个表达式的结果赋值给 b，再赋值给 a
+
+##### 逗号分隔的表达式会顺次执行
+
+整个表达式的结果 就是 最后一个逗号后的表达式结果
+
+```
+a = b, b = 1, null;
+```
+
+### 声明
+
+#### let const 声明
+
+##### 不存在变量提升
 
 使用 `let` `const` 声明的变量，在声明之前使用该对象，就会报错 `ReferenceError`
 
-#### 暂时性死区（TDZ）
+let 和 const 声明虽然看上去是执行到了才会生效，但是实际上，它们还是会被预处理
+
+如果当前作用域内有声明，就无法访问到外部的变量
+
+```
+const a = 2;
+if(true){
+    console.log(a); //抛错
+    const a = 1;   
+}
+```
+
+这里在 if 的作用域中，变量 a 声明执行到之前，我们访问了变量 a，这时会抛出一个错误，这说明 const 声明仍然是有预处理机制的
+
+在执行到 const 语句前，我们的 JavaScript 引擎就已经知道后面的代码将会声明变量 a，从而不允许我们访问外层作用域中的 a
+
+##### 暂时性死区（TDZ）
 
 只要块级作用域内存在 let、const 命令，它所声明的变量就“绑定”（binding）这个区域，不再受外部的影响
 
@@ -47,18 +97,41 @@ var 的作用能够穿透一切语句结构，它只认脚本、模块和函数�
 
 在全局（脚本、模块和函数体），function 声明表现跟 var 相似，不同之处在于，function 声明不但在作用域中加入变量，还会给它赋值
 
-<del>function 声明出现在 if 等语句中的情况有点复杂，它仍然作用于脚本、模块和函数体级别，在预处理阶段，仍然会产生变量，它不再被提前赋值</del>
+function 声明出现在 if 等语句中的情况有点复杂，它仍然作用于脚本、模块和函数体级别，在预处理阶段，仍然会产生变量，它不再被提前赋值
 
-新旧版本的内核不一样，这里新版的内核依然可以得到 function 的值
+> 内核版本不一样可能会出现不同的结果
 
 ```
-console.log(foo); //undefined //f foo(){}
+console.log(foo); //undefined
 if(true) {
     function foo(){
 
     }
 }
 ```
+
+##### arguments
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/arguments
+
+`arguments`对象是所有（非箭头）函数中都可用的 局部变量，不是 `Array` ，可以被设置
+
+可以被转换为数组，但是对参数使用slice会阻止某些JavaScript引擎中的优化
+
+```
+var args = Array.prototype.slice.call(arguments);
+var args = [].slice.call(arguments);
+
+// ES2015
+const args = Array.from(arguments);
+const args = [...arguments];
+
+var args = (arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments));
+```
+
+
+
+`typeof` 返回 `object`
 
 #### class 声明
 
@@ -79,7 +152,9 @@ foo();
 
 这说明，class 声明也是会被预处理的，它会在作用域中创建变量，并且要求访问它时抛出错误
 
+class 内部，可以使用 constructor 关键字来定义构造函数。还能定义 getter/setter 和方法
 
+class 默认内部的函数定义都是 strict 模式的
 
 ## String方法/实现
 
@@ -242,6 +317,107 @@ JavaScript 的指令序言是只有一个字符串直接量的表达式语句，
   - ISO网络模型
   - 缓存机制与缓存方案
 
+# 网络通信
+
+## Web网络基础
+
+> 参考
+>
+> https://mp.weixin.qq.com/s?__biz=MzAxNDYwODEzNw==&mid=2247485663&idx=1&sn=5f74a69b69c1880d32a17e0977554d55&source=41#wechat_redirect
+>
+> 
+
+### 网络分层
+
+#### 为什么要分层：
+
+1. 各层次之间是独立的
+
+   某一层并不需要知道它的下一层是如何实现的，而仅仅需要知道该层通过层间的接口所提供的服务。这样，整个问题的复杂程度就下降了。也就是说上一层的工作如何进行并不影响下一层的工作，这样我们在进行每一层的工作设计时只要保证接口不变可以随意调整层内的工作方式
+
+2. 灵活性好
+
+   当任何一层发生变化时，只要层间接口关系保持不变，则在这层以上或以下层均不受影响。当某一层出现技术革新或者某一层在工作中出现问题时不会连累到其它层的工作，排除问题时也只需要考虑这一层单独的问题即可
+
+3. 结构上可分割开
+
+   各层都可以采用最合适的技术来实现。技术的发展往往不对称的，层次化的划分有效避免了木桶效应，不会因为某一方面技术的不完善而影响整体的工作效率
+
+4. 易于实现和维护
+
+   这种结构使得实现和调试一个庞大又复杂的系统变得易于处理，因为整个的系统已经被分解为若干个相对独立的子系统。进行调试和维护时，可以对每一层进行单独的调试，避免了出现找不到、解决错问题的情况
+
+5. 能促进标准化工作
+
+   因为每一层的功能及其所提供的服务都已有了精确的说明。标准化的好处就是可以随意替换其中的某一层，对于使用和科研来说十分方便
+
+#### OSI模型（7层）
+
+ISO提出的OSI（Open System Interconnection）模型将网络分为七层
+
+即 物理层、数据链路层、网络层、传输层、会话层、表示层、应用层
+
+OSI模型共分七层：
+
+1. 物理层：用物理手段将电脑连接起来，对应网线、网卡、接口等物理设备
+
+2. 数据链路层：将由物理层传来的未经处理的位数据包装成数据帧，在通信的实体间建立数据链路连接
+
+   - MAC地址：网络中计算机设备的唯一标识，从计算机在厂商生产出来就被十六进制的数标识为MAC 地址
+   - 广播：广播可以帮助我们能够知道对方的 MAC 地址
+
+3. 网络层：为数据在结点之间传输创建逻辑链路，通过[路由选择](https://baike.baidu.com/item/路由选择)算法为子网选择最适当的 ip地址，是 **IP协议**工作的地方
+
+   两台计算机之间的通信分为同一子网络和不同子网络之间。怎么判断两台计算机是否在同一子网络（局域网）中？这就是网络层要解决的问题
+
+   - IP协议：IP编址方案、分组封装格式及分组转发规则
+   - 子网掩码：由 32 个二进制位组成，用来划分IP地址中哪一部分是网络号，哪一部分是机器号
+
+4. 传输层：向用户提供可靠的端口到端口(End-to-End)服务，处理[数据包](https://baike.baidu.com/item/数据包)错误、数据包次序，以及其他一些关键传输问题。传输层向高层屏蔽了下层数据通信的细节，是**TCP协议**工作的地方
+
+   - UDP协议
+   - TCP协议： TCP 三次握手和四次挥手，就是传输层中完成的
+
+5. 会话层：建立起两端之间的会话关系，并负责数据的传送，负责维护两个结点之间的传输链接，以便确保点到点传输不中断，以及管理数据交换等功能
+
+6. 表示层：用于处理在两个通信系统中交换信息的表示方式，主要包括数据格式变换、[数据加密与解密](https://baike.baidu.com/item/数据加密与解密)、[数据压缩](https://baike.baidu.com/item/数据压缩)与恢复等功能
+
+7. 应用层：网络操作系统和具体的应用程序，对应WWW服务器、FTP服务器等应用软件，**HTTP协议** 工作的地方
+
+   - HTTP协议
+
+#### 因特网协议（5层）
+
+因特网协议栈共有五层：应用层、传输层、网络层、链路层和物理层
+
+这也是实际使用中使用的分层方式
+
+#### TCP/IP模型（4层）
+
+应用层、传输层、网络层、数据链路层
+
+### TCP/IP 协议族
+
+**TCP/IP** 是互联网相关的各类协议族的总称
+
+通常使用的网络（包括互联网）是在 `TCP/IP` 协议族的基础上运作的。而 `HTTP ` 属于它内部的一个子集
+
+
+
+## 请求分析（Chrome devtool）
+
+https://developers.google.com/web/tools/chrome-devtools/network/understanding-resource-timing
+
+https://developers.google.com/web/tools/chrome-devtools/network/reference
+
+<img src=""/>
+
+<a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing-explanation">名词解释</a>
+
+## HTTP2
+
+
+
 # Vue
 
 # React
@@ -250,6 +426,12 @@ JavaScript 的指令序言是只有一个字符串直接量的表达式语句，
 
 - webpack
 - 项目发布流程
+
+# 优化
+
+https://segmentfault.com/a/1190000022205291
+
+
 
 # codewar刷题
 
