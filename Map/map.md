@@ -402,6 +402,73 @@ OSI模型共分七层：
 
 通常使用的网络（包括互联网）是在 `TCP/IP` 协议族的基础上运作的。而 `HTTP ` 属于它内部的一个子集
 
+## HTTP状态码
+
+### 101 Switching Protocol（协议切换）
+
+表示服务器响应客户端升级协议的请求（ `Upgrade` 请求头 ）正在进行协议切换
+
+## 协议升级机制
+
+### <a name="升级到WebSocket">升级到WebSocket</a>
+
+通过升级HTTP或HTTPS连接来实现 WebSocket
+
+对于前端来讲，可以直接使用 [WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket) ，大部分都会自动完成
+
+```html
+webSocket = new WebSocket("ws://destination.server.ext", "optionalProtocol");
+```
+
+或者 `wss://` 
+
+#### Connection & Upgrade（请求头）（必须）
+
+如果需要从头开始创建WebSocket连接，则必须自己处理握手过程。
+
+创建初始HTTP / 1.1会话后，需要通过向[`Upgrade`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Upgrade)和[`Connection`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Connection)标头添加标准请求来请求升级，如下所示：
+
+```html
+Connection: Upgrade
+Upgrade: websocket
+```
+
+#### 其他可选
+
+##### Sec-WebSocket-Extensions（请求头）
+
+WebSocket  扩展
+
+用 `,` 分隔，有参数的字段用 `;` 分隔
+
+```html
+Sec-WebSocket-Extensions: superspeed, colormode; depth=16
+```
+
+##### Sec-WebSocket-Key（请求）
+
+是一个 Base64 encode的值，这个是浏览器随机生成的，告诉服务器：别忽悠我，我要验证你是不是webSocket客服
+
+##### Sec-WebSocket-Accept（仅响应头）
+
+和 Sec-WebSocket-Key 配合使用，并不能提供安全性，只能防止乱用。
+
+这样的机制可以验证双方都是 socket
+
+##### Sec-WebSocket-Protocol
+
+指定的一个或多个的 WebSocket 子协议，按优先级顺序
+
+##### Sec-WebSocket-Version
+
+说明 WebSocket 版本
+
+##### 
+
+## WebSocket
+
+### [升级到WebSocket](#升级到WebSocket)
+
 
 
 ## 请求分析（Chrome devtool）
@@ -410,13 +477,37 @@ https://developers.google.com/web/tools/chrome-devtools/network/understanding-re
 
 https://developers.google.com/web/tools/chrome-devtools/network/reference
 
-<img src=""/>
+<img src="https://github.com/YuArtian/blog/blob/master/Map/waterfall-hover.png?raw=true"/>
 
 <a href="https://developers.google.com/web/tools/chrome-devtools/network/reference#timing-explanation">名词解释</a>
 
+## 
+
 ## HTTP2
 
+https://developers.google.com/web/fundamentals/performance/http2/?hl=zh-cn
 
+#### HTTP/2 的主要目标
+
+- 通过支持完整的请求与响应复用来减少延迟
+- 通过有效压缩 HTTP 标头字段将协议开销降至最低
+- 增加对请求优先级和服务器推送的支持
+
+#### HTTP/2 主要特点
+
+HTTP/2 没有改动 HTTP 的应用语义。 HTTP 方法、状态代码、URI 和标头字段等核心概念一如往常
+
+不过，HTTP/2 修改了数据格式化（分帧）以及在客户端与服务器间传输的方式
+
+HTTP/2 中，同域名下所有通信都在单个连接上完成，该连接可以承载任意数量的双向数据流
+
+每个数据流都以消息的形式发送，而消息又由一个或多个帧组成
+
+多个帧之间可以乱序发送，根据帧首部的流标识可以重新组装
+
+### 二进制分帧层
+
+新的二进制分帧机制改变了客户端与服务器之间交换数据的方式
 
 # Vue
 
