@@ -6,7 +6,109 @@
 
 ## 基础
 
-### 代码执行
+> https://juejin.im/post/5c2ca1106fb9a049ac794510
+>
+> https://javascript.ruanyifeng.com/advanced/interpreter.html
+>
+> https://segmentfault.com/a/1190000013126460
+
+### 执行环境
+
+`JavaScript` 代码的执行要依靠 宿主环境（浏览器，Node，其他的桌面系统等）
+
+宿主环境会通过 JS引擎（V8等）提供 `JavaScript` 的执行环境
+
+在这个执行期环境，首先需要创建一个代码解析的初始环境，初始化的内容包含：
+
+1. 一套与宿主环境相关联系的规则
+2. JavaScript 引擎内核（基本语法规则、逻辑、命令和算法）
+3. 一组内置对象和 API
+4. 其他约定
+
+> 不同的 JavaScript 引擎定义初始化环境是不同的，这就形成了所谓的浏览器兼容性问题，因为不同的浏览器使用不同 JavaScipt 引擎
+>
+> 微软放弃了自家的 Edge，改用了 Chromium
+
+### 编译原理
+
+以 V8 为例，JS引擎的工作流程如下
+
+<img src=""/>
+
+
+
+#### 分词/词法分析（Scanner）
+
+JS 文件只是一个源码（就是一堆字符串），机器是无法执行的，引擎会调用 Scanner 对源码进行词法分析
+
+词法分析 就是把源码的字符串分割出来，生成一系列的 token，也就是 **词法单元（token）**
+
+```
+var sum = 30;
+// 词法分析后的结果
+[
+  "var" : "keyword",
+  "sum" : "identifier",
+  "="   : "assignment",
+  "30"  : "integer",
+  ";"   : "eos" (end of statement)
+]
+```
+
+
+
+#### 语法分析（Parser）
+
+词法分析完后，接下来的阶段就是使用 Parser 进行语法分析，语法分析的输入就是词法分析的输出
+
+Parser 输出是 AST（抽象语法树）
+
+##### 语法检查
+
+语法分析的同时也会做语法检查，当程序出现语法错误的时候，V8在语法分析阶段就会抛出异常
+
+```
+<script>
+function func() {
+  let a = 10;
+  var a = 1; //Uncaught SyntaxError: Identifier 'a' has already been declared
+}
+</script>
+```
+
+虽然函数 `func` 没有执行，但是在语法分析阶段就已经检查出错误，并报错了
+
+##### 生成AST
+
+
+
+
+
+- 一旦 V8 引擎进入一个执行具体代码的执行上下文（函数），使用 Scanner 对代码进行词法分析，分解为词法单元
+
+- 在对当前的整个作用域分析完成后，Parser 将 token 解析翻译成一个AST（抽象语法树）
+
+- 引擎每次遇到声明语句，就会把声明传到 当前词法环境 中创建一个绑定
+
+  每次声明都会为变量分配内存，只是分配内存，并不会修改源代码将变量声明语句提升。
+
+  变量默认值设为 `undefined`
+
+- 在这之后，引擎每一次遇到赋值或者取值，都会到 词法环境  中查找变量
+
+  如果在 当前词法环境 中没有查找到就根据 外部词法引用（outer），接着向 上级词法环境 查找
+
+  找不到就返回 `null`
+
+- 接着引擎生成 CPU 可以执行的机器码
+
+- 最后， 代码执行完毕
+
+
+
+
+
+
 
 
 
@@ -73,6 +175,10 @@ if(true){
 其本质就是，只要进入当前作用域，所要使用的变量就已经存在，但是不可获取，只有等到声明变量的那一行代码出现，才可以获取和使用该变量
 
 ES6 规定暂时性死区和 let 、const 语句不出现变量提升，主要是为了减少运行时的错误，防止在变量声明前就是用这个变量，从而导致意料之外的行为
+
+##### 不允许重复声明
+
+不允许在相同作用域内，重复声明同一个变量
 
 #### var 声明
 
@@ -155,6 +261,8 @@ foo();
 class 内部，可以使用 constructor 关键字来定义构造函数。还能定义 getter/setter 和方法
 
 class 默认内部的函数定义都是 strict 模式的
+
+
 
 ## String方法/实现
 
@@ -317,6 +425,10 @@ JavaScript 的指令序言是只有一个字符串直接量的表达式语句，
   - ISO网络模型
   - 缓存机制与缓存方案
 
+# 浏览器原理
+
+[浏览器原理](https://github.com/YuArtian/blog/blob/master/JS基础/浏览器原理/浏览器原理.md)
+
 # 网络通信
 
 ## Web网络基础
@@ -463,7 +575,35 @@ Sec-WebSocket-Extensions: superspeed, colormode; depth=16
 
 说明 WebSocket 版本
 
+### <a name="升级到HTTP/2">升级到HTTP/2</a> <?>
 
+#### http
+
+客户端使用 HTTP `Upgrade` 机制请求升级
+
+HTTP2-Settings 首部字段是一个专用于连接的首部字段，它包含管理 HTTP/2 连接的参数(使用 Base64 编码)，其前提是假设服务端会接受升级请求
+
+```
+ GET / HTTP/1.1
+ Host: server.example.com
+ Connection: Upgrade, HTTP2-Settings
+ Upgrade: h2c
+ HTTP2-Settings: <base64url encoding of HTTP/2 SETTINGS payload>
+```
+
+服务器如果支持 http/2 并同意升级，则转换协议，否则忽略
+
+```
+HTTP/1.1 101 Switching Protocols
+Connection: Upgrade
+Upgrade: h2c
+```
+
+目前浏览器只支持 TLS 加密下的 HTTP/2 通信，也就是说，HTTP 不能协商升级到 HTTP/2
+
+#### https
+
+TLS 加密中在 Client-Hello 和 Server-Hello 的过程中通过 [ALPN](https://zh.wikipedia.org/wiki/应用层协议协商) 进行协议协商，可以升级到 HTTP/2
 
 ## WebSocket
 
@@ -475,11 +615,9 @@ Websocket是一个**持久化**的协议，相对于HTTP这种**非持久**的�
 
 Websocket是基于HTTP协议的，或者说**借用**了HTTP的协议来完成一部分握手
 
-
-
 ### [升级到WebSocket](#升级到WebSocket)
 
-### 
+
 
 ## 请求分析（Chrome devtool）
 
@@ -503,7 +641,7 @@ https://developers.google.com/web/tools/chrome-devtools/network/reference
 >
 > HTTP/2 对现在的网页访问，有什么大的优化呢？体现在什么地方？ - Leo Zhang的回答 - 知乎 https://www.zhihu.com/question/24774343/answer/96586977
 >
-> https://juejin.im/post/5b88a4f56fb9a01a0b31a67e#heading-34
+> https://juejin.im/post/5b88a4f56fb9a01a0b31a67e
 
 ### HTTP/2 的主要目标
 
@@ -591,7 +729,21 @@ HTTP/2 标准允许每个数据流都有一个关联的权重和依赖关系：
 
 流控制是一种阻止发送方向接收方发送大量数据的机制
 
-### 
+### 如何升级到 HTTP/2
+
+#### 部署 HTTP/2
+
+> https://zhuanlan.zhihu.com/p/29609078
+
+<img src="https://github.com/YuArtian/blog/blob/master/Map/%E5%A6%82%E4%BD%95%E5%8D%87%E7%BA%A7%E5%88%B0http2.jpg?raw=true"/>
+
+nginx和客户端是HTTP/2，而nginx和业务服务还是HTTP/1.1，因为nginx的服务和业务服务通常是处于同一个内网，速度一般会很快，而nginx和客户端的连接就不太可控了，如果业务服务本身支持HTTP/2，会更好
+
+#### 协商升级
+
+[HTTP/2协商升级](#HTTP/2协商升级)
+
+
 
 # Vue
 
