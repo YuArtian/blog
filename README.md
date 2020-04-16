@@ -1,8 +1,10 @@
-# 懒癌 + 拖延症是真的没治的
+# 懒癌的招牌已被我一脚踢开
+#### 天天更，随时更，为了面试努力更 (๑•̀ㅂ•́)و✧ 
+# <del>懒癌 + 拖延症是真的没治的</del>
 ## 这是一个个人博客
-### 所以说 我想怎么水(鸽)就怎么水(鸽)～ 
+### <del>所以说 我想怎么水(鸽)就怎么水(鸽)～ </del>不能再鸽了 再鸽就更尼玛菜了
 但是也包括一些思考 和 总结 和 分享 和 不知道你知不知道的玩意。。。<br><br>
-
+# ⭐ 把你 star 给劳资交了 ⭐
 ## 🚢 Logbook 🌊 🌊 🌊 ～
 #### -- 2020/4/12
 重新规划了一下，开始做新版本的blog啦~  (๑•̀ㅂ•́)و✧
@@ -23,7 +25,7 @@
 帮助<del>自己</del>大家梳理一些基础的知识，省得面试复习的时候没底儿哈。哈。。哈。。。
 还有没补全的部分，我会一直更新哒~<br>
 
-<a href="https://github.com/YuArtian/blog/blob/master/Map/map.md">🗺️ 知识地图 🗺️</a><br>
+## <a href="https://github.com/YuArtian/blog/blob/master/Map/map.md">🗺️ 知识地图 🗺️（你也可以叫它面试宝典）</a><br>
 <del>Xmind或许还是太麻烦了</del><br>
 <del>概览图 --->(详情请自行<a href='https://github.com/YuArtian/blog/blob/master/%E5%89%8D%E7%AB%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE.xmind'>下载</a> 前端基础知识思维导图.xmind)</del>
 
