@@ -133,7 +133,7 @@ https://astexplorer.net/ 在线生成AST
 
 ##### 确定词法作用域
 
-<img src=""/>
+<img src="https://github.com/YuArtian/blog/blob/master/Map/%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90%E7%A1%AE%E5%AE%9A%E8%AF%8D%E6%B3%95%E4%BD%9C%E7%94%A8%E5%9F%9F.png?raw=true"/>
 
 生成 AST 的同时也会确定相应的词法环境结构，也就是常说的作用域
 
