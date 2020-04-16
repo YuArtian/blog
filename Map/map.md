@@ -59,6 +59,10 @@ var sum = 30;
 
 > https://juejin.im/post/5c2ca1106fb9a049ac794510
 >
+> https://v8.dev/blog/preparser
+>
+> https://juejin.im/post/5cf33bd751882579e53f0130
+>
 > 
 
 词法分析完后，接下来的阶段就是使用 Parser 进行语法分析，语法分析的输入就是词法分析的输出
@@ -67,7 +71,7 @@ Parser 接收 词法单元流 输出 AST（抽象语法树）
 
 词法分析和语法分析不是完全独立的，而是交错进行的，也就是说，词法分析器不会在读取所有的词法记号后再使用语法分析器来处理。在通常情况下，每取得一个词法记号，就将其送入语法分析器进行分析
 
-<img src=""/>
+<img src="https://github.com/YuArtian/blog/blob/master/Map/%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90.png?raw=true"/>
 
 ##### 语法检查
 
@@ -139,45 +143,128 @@ https://astexplorer.net/ 在线生成AST
 
 
 
-#### 代码生成
+##### eager parse(全量解析) 和 lazy parse（惰性解析）
+
+然而并不是所有 Js 都需要在初始化时就被执行，因此也不需要在初始化时就解析所有的 Js！因为编译 Js 会带来三个成本问题：
+
+1. 编译不必要的代码会占用 CPU 资源
+2. 在 GC 前会占用不必要的内存空间
+3. 编译后的代码会缓存在磁盘，占用磁盘空间
+
+因此所有主流浏览器都实现了 Lazy Parse（延迟解析）
+
+Lazy Parse 会将不必要的函数（没有立即执行的函数）进行预解析
+
+预解析只验证它跳过函数是语法有效的，并产生正确编译外部函数所需的所有信息
+
+而 eager parse（全量解析）则在调用这个函数时才发生
+
+所以，有如下两种解析器
+
+- eager parse（全面解析）：
+
+- - 用于解析立即执行的内容
+  - 构建语法树
+  - 构建函数作用域(Scopes)
+  - 找出所有语法错误
+
+- lazy parse（惰性解析/预解析）：
+
+- - 用于跳过没有立即执行的函数
+  - 不构建语法树，会构建函数词法环境，但不设置词法环境中的变量引用（variable references）和变量申明（variable declarations）
+  - 解析速度，大约比eager解析器快2倍
+  - 找出限定的几种错误（没有遵守 JavaScript 的规范）
+
+###### 解析过程
+
+这两种解析器在解析的过程中是交替进行解析的
+
+```
+let a = 0; //Top level code is eager
+//IIFE
+(function eager() {...})() //Body is eager
+//Top level function but not IIFE
+function lazy() {...} //Body is lazy
+//Later
+...lazy();
+// -> eager parsed and complied now!;
+```
+
+所有的最外层代码 和 IIFE（立即执行函数）直接使用 eager 解析
+
+其他函数，会先进行预解析，在调用的时候才进行全面解析
+
+下面看看一些复杂的解析情况：
+
+```
+let f1 = function lazy() {...};使用lazy-parsing,没有问题
+
+let  f2 = function lazy() {...}()//糟糕的情况，在看到最后的括号之前已经使用了lazy-parsing，但遇到括号后，不得不里面又转向eager-parsing，重新parse
+```
+
+对于嵌套函数对于解析会带来很不好的影响
+
+```
+function lazy_outer(){          //Lazy parse this
+    function inner(){....}      //This too
+}
+
+...lazy_outer(); 
+//here,V8 will lazy parsing inner angin,even it has done it already once
+```
+
+嵌套函数 inner 会被预解析两次
+
+###### 解析过程实例分析
+
+
+
+#### 可执行代码生成与执行
 
 将 AST 转换成可执行代码的过程被称为代码生成。这个过程与语言、目标平台相关
+
+经过编译阶段的准备， JavaScript 代码在内存中已经被构建为 AST语法树
+
+然后由解析器和编译器根据这个语法树结构，一行一行的边解析边执行
 
 ##### 解析器（Ignition）
 
 解析器 解析 AST 生成字节码（bytecode），并解释执行字节码
 
-
+执行期间，会将多次执行的函数标记为 `HotSpot`（热点代码），后台的编译器  `TurboFan` 编译成高效的 机器码。再次执行这段代码时，只需要执行机器码就可以了
 
 ##### 优化编译器（TurboFan）
 
-将字节码（Bytecode）编译生成优化的机器代码（Machine Code）
+将字节码（Bytecode）编译生成优化的机器代码（Machine Code）存储起来
+
+再次执行的时候直接运行缓存的机器码，以此提高性能
+
+优化代码是根据 解释器 提供的 函数参数的变量类型等优化信息来简化代码执行流程的
+
+所以JS代码中变量的类型变来变去，是会给V8引擎增加不少麻烦的，为了提高性能，我们可以尽量不要去改变变量的类型
+
+##### 去优化（Deoptimize）
+
+遇到不能优化的情况（也就是上面说的类型变了）时，则 `Deoptimize` 为 bytecode 返回给 解释器 执行
+
+去优化会降低效率的
 
 
 
-#### 一条声明语句的执行过程
+#### 执行流程实例
 
-- V8 引擎进入可执行上下文（一般最开始为全局上下文，函数调用时进入函数上下文）
+结合一段代码，分析 JS代码的编译和执行过程，以及关于 变量提升，词法环境等
 
-  使用 Scanner 对代码进行词法分析，分解为词法单元
+```
+showName()
+console.log(myname)
+var myname = '极客时间'
+function showName() {
+    console.log('函数showName被执行');
+}
+```
 
-- 在对当前的整个可执行上下文分析完成后，Parser 将对 token 进行语法分析和语法检查，最终生成AST（抽象语法树）
 
-- 引擎每次遇到声明语句，就会把声明传到 当前词法环境 中创建一个绑定
-
-  每次声明都会为变量分配内存，只是分配内存，并不会修改源代码将变量声明语句提升。
-
-  变量默认值设为 `undefined`
-
-- 在这之后，引擎每一次遇到赋值或者取值，都会到 词法环境  中查找变量
-
-  如果在 当前词法环境 中没有查找到就根据 外部词法引用（outer），接着向 上级词法环境 查找
-
-  找不到就返回 `null`
-
-- 接着引擎生成 CPU 可以执行的机器码
-
-- 最后， 代码执行完毕
 
 
 
