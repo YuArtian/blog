@@ -33,7 +33,7 @@
 
 以 V8 为例，JS引擎的工作流程如下
 
-<img src=""/>
+<img src="https://github.com/YuArtian/blog/blob/master/Map/V8%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png?raw=true"/>
 
 
 
@@ -54,8 +54,6 @@ var sum = 30;
   ";"   : "eos" (end of statement)
 ]
 ```
-
-
 
 #### 语法分析（Parser）
 
@@ -80,13 +78,72 @@ function func() {
 
 ##### 生成AST
 
+AST（抽象语法树）指的是源代码语法所对应的树状结构
+
+https://astexplorer.net/ 
+
+例如，var sum = 30；会对应生成如下的AST
+
+```
+{
+  "type": "Program",
+  "start": 0,
+  "end": 13,
+  "body": [
+    {
+      "type": "VariableDeclaration",
+      "start": 0,
+      "end": 13,
+      "declarations": [
+        {
+          "type": "VariableDeclarator",
+          "start": 4,
+          "end": 12,
+          "id": {
+            "type": "Identifier",
+            "start": 4,
+            "end": 7,
+            "name": "sum"
+          },
+          "init": {
+            "type": "Literal",
+            "start": 10,
+            "end": 12,
+            "value": 30,
+            "raw": "30"
+          }
+        }
+      ],
+      "kind": "var"
+    }
+  ],
+  "sourceType": "module"
+}
+```
+
+#### 代码生成
+
+将 AST 转换成可执行代码的过程被称为代码生成。这个过程与语言、目标平台相关
+
+##### 解析器（Ignition）
+
+解析器 解析 AST 生成字节码（bytecode），并解释执行字节码
 
 
 
+##### 优化编译器（TurboFan）
 
-- 一旦 V8 引擎进入一个执行具体代码的执行上下文（函数），使用 Scanner 对代码进行词法分析，分解为词法单元
+将字节码（Bytecode）编译生成优化的机器代码（Machine Code）
 
-- 在对当前的整个作用域分析完成后，Parser 将 token 解析翻译成一个AST（抽象语法树）
+
+
+#### 一条声明语句的执行过程
+
+- V8 引擎进入可执行上下文（一般最开始为全局上下文，函数调用时进入函数上下文）
+
+  使用 Scanner 对代码进行词法分析，分解为词法单元
+
+- 在对当前的整个可执行上下文分析完成后，Parser 将对 token 进行语法分析和语法检查，最终生成AST（抽象语法树）
 
 - 引擎每次遇到声明语句，就会把声明传到 当前词法环境 中创建一个绑定
 
