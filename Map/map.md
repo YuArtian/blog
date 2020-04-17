@@ -720,18 +720,40 @@ Chrome：Blink（Webkit的分支）
 
 ## 浏览器渲染流程
 
+> https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-tree-construction?hl=zh-cn
+>
+> https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-tree-construction?hl=zh-cn
+>
+> https://juejin.im/post/5bd96c5a5188257f96542cbf
+
 浏览器器内核拿到内容后，正常的渲染大概可以划分成以下几个步骤：
 
 - 输入url，发起请求，请求html文件
 
 - 预扫描<?>
 
-- 从根节点开始遍历每个可见节点，构建 DOM（文档对象模型）
+- <img src="https://github.com/YuArtian/blog/blob/master/Map/domtree%E7%94%9F%E6%88%90%E8%BF%87%E7%A8%8B.png?raw=true"/>
 
-- 
+  1. **转换：** 浏览器从磁盘或网络读取 HTML 的原始字节，并根据文件的指定编码（例如 UTF-8）将它们转换成各个字符
+  2. **令牌化：** 浏览器将字符串转换成 [W3C HTML5 标准](http://www.w3.org/TR/html5/)规定的各种令牌，例如，“\<html\>”、“\<body\>”，以及其他尖括号内的字符串。每个令牌都具有特殊含义和一组规则
+  3. **词法分析：** 把发出的令牌转换成定义其 属性：规则（key: value）的 "对象"
+  4. **DOM 构建：** 根据 HTML 标签之间的嵌套关系，把词法分析后创建的对象链接在一个树数据结构内
 
-  - 解析 html 建立 DOM 树
-  - 解析 CSS 构建 CSSOM
+  > 上面的最终输出是 文档对象模型 (DOM)，浏览器对页面进行的所有进一步处理都会用到
+
+  > 解析 HTML 标签过程中如果遇到了脚本标签 \<script\> DOM 构建会暂停，直道脚本下载完并执行完毕
+
+  > 如果遇到 link 标签，会立即发出对该资源的请求，下载 css 文件，不阻塞 DOM 构建
+
+  > 如果遇到 style 标签，则参与 CSSOM（CSS 对象模型）的构建，不阻塞 DOM 构建
+
+- 生成DOM的同时也在构建 CSSOM （CSS 对象模型）
+
+  和 DOM 的生成一样，CSS 字节转换成字符，接着转换成令牌和节点，最后链接到一个称为 CSSOM 的树结构内
+
+  每个浏览器都提供一组默认样式（也称为“User Agent 样式”），即不提供任何自定义样式时所看到的样式，我们的样式只是替换这些默认样式
+
+  
 
 - 将 CSSOM 结合 DOM 合并成 渲染树（render tree）
 
@@ -767,17 +789,233 @@ Chrome：Blink（Webkit的分支）
 
 当 `Render Tree` 中部分或全部元素的尺寸、结构、或某些属性发生改变时，浏览器也会重排
 
+根据改变的范围和程度，渲染树中或大或小的部分需要重新计算，有些改变会触发整个页面的重排
+
+比如，滚动条出现的时候或者修改了根节点
+
+我们前面知道了，回流这一阶段主要是计算节点的位置和几何信息，那么当页面布局和几何信息发生变化的时候，就需要回流。比如以下情况：
+
+- 添加或删除可见的DOM元素
+- 元素的位置发生变化
+- 元素的尺寸发生变化（包括外边距、内边框、边框大小、高度和宽度等）
+- 内容发生变化，比如文本变化或图片被另一个不同尺寸的图片所替代
+- 页面一开始渲染的时候（这肯定避免不了）
+- 浏览器的窗口尺寸变化（因为回流是根据视口的大小来计算元素的位置和大小的）
+
 #### 重绘（Repaint）
 
-最终，通过构造渲染树和回流阶段，我们知道了哪些节点是可见的，以及可见节点的样式和具体的几何信息(位置、大小)，那么我们就可以将渲染树的每个节点都转换为屏幕上的实际像素，这个阶段就叫做重绘节点
+最终，通过构造渲染树和回流阶段，我们知道了哪些节点是可见的，以及可见节点的样式和具体的几何信息(位置、大小)
+
+那么我们就可以将渲染树的每个节点都转换为屏幕上的实际像素，这个阶段就叫做重绘节点
+
+#### 浏览器的优化机制
+
+现代的浏览器都是很聪明的，由于每次重排都会造成额外的计算消耗，因此大多数浏览器都会通过队列化修改并批量执行来优化重排过程。浏览器会将修改操作放入到队列里，直到过了一段时间或者操作达到了一个阈值，才清空队列。但是！**当你获取布局信息的操作的时候，会强制队列刷新**，比如当你访问以下属性或者使用以下方法：
+
+- offsetTop、offsetLeft、offsetWidth、offsetHeight
+- scrollTop、scrollLeft、scrollWidth、scrollHeight
+- clientTop、clientLeft、clientWidth、clientHeight
+- getComputedStyle()
+- getBoundingClientRect
+- 具体可以访问这个网站：https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+
+以上属性和方法都需要返回最新的布局信息，因此浏览器不得不清空队列，触发回流重绘来返回正确的值。因此，我们在修改样式的时候，**最好避免使用上面列出的属性，他们都会刷新渲染队列。**如果要使用它们，最好将值缓存起来
 
 #### 如何避免重绘或者重排
+
+> https://github.com/chenjigeng/blog/issues/4
+
+##### 最小化重绘和重排
+
+由于重绘和重排可能代价比较昂贵，因此最好就是可以减少它的发生次数。为了减少发生次数，我们可以合并多次对DOM和样式的修改，然后一次处理掉。考虑这个例子
+
+```
+const el = document.getElementById('test');
+el.style.padding = '5px';
+el.style.borderLeft = '1px';
+el.style.borderRight = '2px';
+```
+
+例子中，有三个样式属性被修改了，每一个都会影响元素的几何结构，引起回流。当然，大部分现代浏览器都对其做了优化，因此，只会触发一次重排。但是如果在旧版的浏览器或者在上面代码执行的时候，有其他代码访问了布局信息(上文中的会触发回流的布局信息)，那么就会导致三次重排。
+
+因此，我们可以合并所有的改变然后依次处理，比如我们可以采取以下的方式：
+
+- 使用cssText
+
+  ```
+  const el = document.getElementById('test');
+  el.style.cssText += 'border-left: 1px; border-right: 2px; padding: 5px;';
+  ```
+
+- 修改CSS的class
+
+  ```
+  const el = document.getElementById('test');
+  el.className += ' active';
+  ```
+
+##### 批量修改DOM
+
+> 注意这个例子跟上面的例子是不一样的
+>
+> 这里是对新生成的 li 操作，并插入 ul
+>
+> 上面的例子是直接修改了已有的元素多次的情况
+
+当我们需要对DOM对一系列修改的时候，可以通过以下步骤减少回流重绘次数：
+
+1. 使元素脱离文档流
+2. 对其进行多次修改
+3. 将元素带回到文档中
+
+该过程的第一步和第三步可能会引起回流，但是经过第一步之后，对DOM的所有修改都不会引起回流，因为它已经不在渲染树了。
+
+有三种方式可以让DOM脱离文档流：
+
+- 隐藏元素，应用修改，重新显示
+- 使用文档片段(document fragment)在当前DOM之外构建一个子树，再把它拷贝回文档。
+- 将原始元素拷贝到一个脱离文档的节点中，修改节点后，再替换原始的元素。
+
+考虑我们要执行一段批量插入节点的代码：
+
+```
+function appendDataToElement(appendToElement, data) {
+    let li;
+    for (let i = 0; i < data.length; i++) {
+    	li = document.createElement('li');
+        li.textContent = 'text';
+        appendToElement.appendChild(li);
+    }
+}
+
+const ul = document.getElementById('list');
+appendDataToElement(ul, data);
+```
+
+如果我们直接这样执行的话，由于每次循环都会插入一个新的节点，会导致浏览器回流一次。
+
+我们可以使用这三种方式进行优化:
+
+###### 隐藏元素，应用修改，重新显示
+
+这个会在展示和隐藏节点的时候，产生两次重绘
+
+```
+function appendDataToElement(appendToElement, data) {
+    let li;
+    for (let i = 0; i < data.length; i++) {
+    	li = document.createElement('li');
+        li.textContent = 'text';
+        appendToElement.appendChild(li);
+    }
+}
+const ul = document.getElementById('list');
+ul.style.display = 'none';
+appendDataToElement(ul, data);
+ul.style.display = 'block';
+```
+
+###### 文档片段(document fragment)
+
+使用文档片段(document fragment)在当前DOM之外构建一个子树，再把它拷贝回文档
+
+```
+const ul = document.getElementById('list');
+const fragment = document.createDocumentFragment();
+appendDataToElement(fragment, data);
+ul.appendChild(fragment);
+```
+
+###### 拷贝原始元素
+
+将原始元素拷贝到一个脱离文档的节点中，修改节点后，再替换原始的元素
+
+```
+const ul = document.getElementById('list');
+const clone = ul.cloneNode(true);
+appendDataToElement(clone, data);
+ul.parentNode.replaceChild(clone, ul);
+```
+
+对于上述那种情况，我写了一个[demo](https://chenjigeng.github.io/example/share/避免回流重绘/批量修改DOM.html)来测试修改前和修改后的性能。然而实验结果不是很理想。
+
+> 原因：原因其实上面也说过了，浏览器会使用队列来储存多次修改，进行优化，所以对这个优化方案，我们其实不用优先考虑
+
+##### 避免触发同步布局事件
+
+上文我们说过，当我们访问元素的一些属性的时候，会导致浏览器强制清空队列，进行强制同步布局。举个例子，比如说我们想将一个p标签数组的宽度赋值为一个元素的宽度，我们可能写出这样的代码：
+
+```
+function initP() {
+    for (let i = 0; i < paragraphs.length; i++) {
+        paragraphs[i].style.width = box.offsetWidth + 'px';
+    }
+}
+```
+
+这段代码看上去是没有什么问题，可是其实会造成很大的性能问题。在每次循环的时候，都读取了box的一个offsetWidth属性值，然后利用它来更新p标签的width属性。这就导致了每一次循环的时候，浏览器都必须先使上一次循环中的样式更新操作生效，才能响应本次循环的样式读取操作。每一次循环都会强制浏览器刷新队列。我们可以优化为:
+
+```
+const width = box.offsetWidth;
+function initP() {
+    for (let i = 0; i < paragraphs.length; i++) {
+        paragraphs[i].style.width = width + 'px';
+    }
+}
+```
+
+同样，我也写了个[demo](https://chenjigeng.github.io/example/share/避免回流重绘/避免快速连续的布局.html)来比较两者的性能差异。你可以自己点开这个demo体验下。这个对比差距就比较明显
+
+##### 对于复杂动画效果,使用绝对定位让其脱离文档流
+
+对于复杂动画效果，由于会经常的引起回流重绘，因此，我们可以使用绝对定位，让它脱离文档流。否则会引起父元素以及后续元素频繁的回流。这个我们就直接上个[例子](https://chenjigeng.github.io/example/share/避免回流重绘/将复杂动画浮动化.html)。
+
+打开这个例子后，我们可以打开控制台，控制台上会输出当前的帧数(虽然不准)。
+
+[![image-20181210223750055](https://camo.githubusercontent.com/b55259705298334e5b07754a86ef0fea14795a6c/68747470733a2f2f696d67323031382e636e626c6f67732e636f6d2f626c6f672f3939333334332f3230313831322f3939333334332d32303138313231303233313034383630392d3631393032323439342e706e67)](https://camo.githubusercontent.com/b55259705298334e5b07754a86ef0fea14795a6c/68747470733a2f2f696d67323031382e636e626c6f67732e636f6d2f626c6f672f3939333334332f3230313831322f3939333334332d32303138313231303233313034383630392d3631393032323439342e706e67)
+
+从上图中，我们可以看到，帧数一直都没到60。这个时候，只要我们点击一下那个按钮，把这个元素设置为绝对定位，帧数就可以稳定60
+
+##### css3硬件加速（GPU加速）
+
+比起考虑如何减少回流重绘，我们更期望的是，根本不要回流重绘。这个时候，css3硬件加速就闪亮登场啦！！
+
+**划重点：使用css3硬件加速，可以让transform、opacity、filters这些动画不会引起回流重绘 。但是对于动画的其它属性，比如background-color这些，还是会引起回流重绘的，不过它还是可以提升这些动画的性能。**
+
+本篇文章只讨论如何使用，暂不考虑其原理，之后有空会另外开篇文章说明。
+
+###### 如何使用
+
+常见的触发硬件加速的css属性：
+
+- transform
+- opacity
+- filters
+- Will-change
+
+###### 效果
+
+我们可以先看个[例子](https://chenjigeng.github.io/example/share/对比gpu加速/gpu加速-transform.html)。我通过使用chrome的Performance捕获了一段时间的回流重绘情况，实际结果如下图：
+
+[![image-20181210225609533](https://camo.githubusercontent.com/ee3a6409cf8b3a91bcaeb255f0cc815f4870acd7/68747470733a2f2f696d67323031382e636e626c6f67732e636f6d2f626c6f672f3939333334332f3230313831322f3939333334332d32303138313231303233303935393938372d313431393334383634342e706e67)](https://camo.githubusercontent.com/ee3a6409cf8b3a91bcaeb255f0cc815f4870acd7/68747470733a2f2f696d67323031382e636e626c6f67732e636f6d2f626c6f672f3939333334332f3230313831322f3939333334332d32303138313231303233303935393938372d313431393334383634342e706e67)
+
+从图中我们可以看出，在动画进行的时候，没有发生任何的回流重绘。如果感兴趣你也可以自己做下实验。
+
+###### 重点
+
+- 使用css3硬件加速，可以让transform、opacity、filters这些动画不会引起回流重绘
+- 对于动画的其它属性，比如background-color这些，还是会引起回流重绘的，不过它还是可以提升这些动画的性能。
+
+###### css3硬件加速的坑
+
+- 如果你为太多元素使用css3硬件加速，会导致内存占用较大，会有性能问题。
+- 在GPU渲染字体会导致抗锯齿无效。这是因为GPU和CPU的算法不同。因此如果你不在动画结束的时候关闭硬件加速，会产生字体模糊
 
 
 
 ### 渲染阻塞
 
-HTML 和 CSS 都是阻塞渲染的资源
+HTML 和 CSS 都是阻塞浏览器渲染的资源
 
 #### HTML阻塞渲染
 
@@ -787,15 +1025,29 @@ HTML 显然是必需的，因为如果没有 DOM，我们就没有可渲染的�
 
 CSS 是阻塞渲染的资源。需要将它尽早、尽快地下载到客户端，以便缩短首次渲染的时间
 
-但是 CSS 并不阻塞 DOM解析生成 DOM tree
+**但是 CSS 并不阻塞 DOM解析生成 DOM tree**
 
-CSS 还会阻塞在它后面的 `js` 代码的执行。比如在一个 `link` 标签后面的 `js` 代码会一直等到 css 加载完成之后才执行
+CSS 有可能阻塞在它后面的 `js` 代码的执行
+
+比如在一个 `link` 标签后面的 `js` 代码会一直等到 css 加载完成之后才执行
+
+Firefox 在样式表加载和解析的过程中，会禁止所有脚本
+
+而对于 WebKit 而言，仅当脚本尝试访问的样式属性可能受尚未加载的样式表影响时，它才会禁止该脚本
 
 #### JS阻塞渲染
 
 解析DOM时，当浏览器遇到一个 script 标记，DOM 构建将暂停，直至脚本完成执行，然后继续构建 DOM
 
 每次去执行  JavaScript 脚本都会严重地阻塞 DOM树 的构建
+
+##### defer
+
+##### async
+
+### 样式计算
+
+构建渲染树时，需要计算每一个渲染对象的可视化属性，这是通过计算每个元素的样式属性来完成的
 
 
 
