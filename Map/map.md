@@ -258,19 +258,76 @@ function lazy_outer(){          //Lazy parse this
 ```
 showName()
 console.log(myname)
-var myname = '极客时间'
+var myname = 'yu'
+console.log(myname)
 function showName() {
-    console.log('函数showName被执行');
+    console.log('第一个函数showName被执行');
 }
+function showName() {
+    console.log('第二个函数showName被执行');
+}
+var showName = 'showName'
+console.log(showName)
 ```
 
+编译阶段：
 
+JS引擎处理源码字符串，先进入编译阶段，进行词法分析和语法分析，目的是要生成 执行上下文 和 可执行代码
 
+进入全局上下文，生成全局词法环境（包括变量环境组件，词法环境组件等），开始逐行编译源码
 
+- 第 1 行和第 2 行是执行语句，在编译阶段只编译成对应的AST结构，当然之前的全局环境也有对应的AST
 
+- 第 3 行，遇到 `var` 声明。JS引擎在变量环境组件的环境记录中添加一条 `myname` 的属性，并对其初始化为 `undefined`
 
+- 第 4 行，JavaScript 引擎发现了一个通过 function 定义的函数，所以它将函数定义存储到堆 (HEAP）中，并在环境对象中创建一个 showName 的属性，然后将该属性值指向堆中函数的位置
 
+- 第 5 行，声明 showName 时，在环境对象中发现同名的属性，找到堆中函数定义的位置，将之前的覆盖掉
 
+- 第 6 行，声明名为 showName 的变量，在环境对象中发现同名的属性，但是由于函数声明优先的规则，这里的 变量声明被忽略了，所以 showName 依然是函数
+
+- 代码编译结束，词法环境构建完成，有了执行上下文和可执行代码
+
+   JavaScript 引擎会把声明以外的代码编译为字节码
+
+```
+showName()
+console.log(myname)
+myname = 'yu'
+console.log(myname)
+showName = 'showName'
+console.log(showName)
+```
+
+进入执行阶段
+
+执行阶段：
+
+JavaScript 引擎开始执行"可执行代码"，按照顺序一行一行地执行
+
+- 当执行到 showName 函数时，JavaScript 引擎便开始在变量环境对象中查找该函数
+
+  由于变量环境对象中存在该函数的引用，所以 JavaScript 引擎便开始执行该函数
+
+  输出结果 "第二个函数showName被执行"
+
+- 接下来打印 myname 信息，JavaScript 引擎继续在变量环境对象中查找该对象，由于变量环境存在 myname 变量，并且其值为 undefined，所以这时候就输出 undefined
+
+- 执行第 3 行，把 "yu" 赋给 myname 变量，赋值后变量环境中的 myname 属性值改变为"yu"
+
+- 执行第 4 行，打印 myname 信息，由于上面已经被重新赋值，所以输出 "yu"
+
+- 执行第 5 行，将 showName 重新赋值为 'showName'，不再引用堆内存，之前的内存被回收
+
+- 执行第 6 行，打印输出 showName，由于 showName 被重新赋值成字符串，输出 'showName'
+
+接下来，变量环境如下所示：
+
+```
+VariableEnvironment:
+     myname -> "yu", 
+     showName -> "showName"
+```
 
 
 
