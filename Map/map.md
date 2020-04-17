@@ -253,6 +253,8 @@ function lazy_outer(){          //Lazy parse this
 
 #### 执行流程实例
 
+> http://latentflip.com/loupe/?code=JC5vbignYnV0dG9uJywgJ2NsaWNrJywgZnVuY3Rpb24gb25DbGljaygpIHsKICAgIHNldFRpbWVvdXQoZnVuY3Rpb24gdGltZXIoKSB7CiAgICAgICAgY29uc29sZS5sb2coJ1lvdSBjbGlja2VkIHRoZSBidXR0b24hJyk7ICAgIAogICAgfSwgMjAwMCk7Cn0pOwoKY29uc29sZS5sb2coIkhpISIpOwoKc2V0VGltZW91dChmdW5jdGlvbiB0aW1lb3V0KCkgewogICAgY29uc29sZS5sb2coIkNsaWNrIHRoZSBidXR0b24hIik7Cn0sIDUwMDApOwoKY29uc29sZS5sb2coIldlbGNvbWUgdG8gbG91cGUuIik7!!!PGJ1dHRvbj5DbGljayBtZSE8L2J1dHRvbj4%3D
+
 结合一段代码，分析 JS代码的编译和执行过程，以及关于 变量提升，词法环境等
 
 ```
@@ -647,6 +649,16 @@ JavaScript 的指令序言是只有一个字符串直接量的表达式语句，
 # 浏览器原理
 
 [浏览器原理](https://github.com/YuArtian/blog/blob/master/JS基础/浏览器原理/浏览器原理.md)
+
+### 重绘（Repaint）和重排/回流（Reflow）
+
+#### 重绘（Repaint）
+
+
+
+#### 如何避免重绘或者重排
+
+
 
 # 网络通信
 
