@@ -650,13 +650,195 @@ JavaScript 的指令序言是只有一个字符串直接量的表达式语句，
 
 [浏览器原理](https://github.com/YuArtian/blog/blob/master/JS基础/浏览器原理/浏览器原理.md)
 
+## 浏览器
+
+pc 端使用 `navigator` 获取 `appName`，`appCodeName`，`userAgent` 等都没有参考价值，并不能正确的获取名称。（这样主要是出于兼容的考虑 [?] ）<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Navigator">Navigator</a>
+
+移动端可以使用 `navigator.userAgent` 来判断客户端型号 <a href="https://segmentfault.com/a/1190000008789985">移动端UserAgent</a>
+
+## 浏览器的进程
+
+浏览器是多进程的，有：
+
+- Browser 主进程：浏览器的主进程（负责协调、主控），只有一个
+- 第三方插件进程：每种类型的插件对应一个进程，仅当使用该插件时才创建 
+- GPU进程：最多一个，用于3D绘制等 
+- 浏览器渲染进程（浏览器内核，Renderer）：默认每个Tab页面一个进程，互不影响。进行页面渲染，脚本执行，事件处理等
+- 网络进程：该进程主要负责页面的网络资源加载，比如在地址栏输入一个网页地址，网络进程会将请求后得到的资源交给渲染进程处理
+
+**浏览器多进程的优势**
+
+相比于单进程浏览器，多进程有如下优点：
+
+- 避免单个page crash影响整个浏览器
+- 避免第三方插件crash影响整个浏览器
+- 多进程充分利用多核优势
+- 方便使用沙盒模型隔离插件等进程，提高浏览器稳定性
+
+当然，内存等资源消耗也会更大，有点空间换时间的意思
+
+## 浏览器内核（渲染进程|Renderer）
+
+Chrome：Blink（Webkit的分支）
+
+
+
+页面的渲染，JS的执行，事件的循环，都在这个进程内进行
+
+浏览器内核是多线程的，如图
+
+<img src="https://github.com/YuArtian/blog/blob/master/JS%E5%9F%BA%E7%A1%80/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8E%9F%E7%90%86/1.png?raw=true" style="width:300px;"/>
+
+- **GUI 渲染线程**
+  * 负责渲染浏览器界面，解析HTML，CSS，构建DOM树和RenderObject树，布局和绘制等
+  * 当界面需要重绘（Repaint）或由于某种操作引发回流(reflow)时，该线程就会执行
+  * 注意，GUI渲染线程与JS引擎线程是互斥的，当JS引擎执行时GUI线程会被挂起（相当于被冻结了），GUI更新会被保存在一个队列中等到JS引擎空闲时立即被执行
+
+- **JS引擎线程**（<a href="[https://github.com/YuArtian/blog/blob/master/JS%E5%9F%BA%E7%A1%80/JS%E5%BC%95%E6%93%8E/JS%E5%BC%95%E6%93%8E.md](https://github.com/YuArtian/blog/blob/master/JS基础/JS引擎/JS引擎.md)">JS引擎</a>）
+  * 也称为JS内核，负责处理Javascript脚本程序（例如V8引擎）
+  * JS引擎线程负责解析Javascript脚本，运行代码
+  * JS引擎一直等待着任务队列中任务的到来，然后加以处理，一个Tab页（renderer进程）中无论什么时候都只有一个JS线程在运行JS程序
+  * 同样注意，GUI渲染线程与JS引擎线程是互斥的，所以如果JS执行的时间过长，这样就会造成页面的渲染不连贯，导致页面渲染加载阻塞
+- **事件触发线程**
+  * 归属于浏览器而不是JS引擎，用来控制事件循环
+  * 当JS引擎执行代码块如 `setTimeOut` 时（也可来自浏览器内核的其他线程，如鼠标点击、AJAX异步请求等），会将对应任务添加到事件线程
+  * 当对应的事件符合触发条件被触发时，该线程会把事件添加到待处理队列的队尾，等待JS引擎的处理
+  * 注意，由于JS的单线程关系，所以这些待处理队列中的事件都得排队等待JS引擎处理（当JS引擎空闲时才会去执行）
+- **定时器触发线程**
+  * setInterval与setTimeout所在线程
+  * 浏览器定时计数器并不是由JavaScript引擎计数的,（因为JavaScript引擎是单线程的, 如果处于阻塞线程状态就会影响记计时的准确）
+  * 因此通过单独线程来计时并触发定时（计时完毕后，添加到事件队列中，等待JS引擎空闲后执行）
+  * 注意，W3C在HTML标准中规定，规定要求setTimeout中低于4ms的时间间隔算为4ms
+- **异步http请求线程**
+  * 在XMLHttpRequest在连接后是通过浏览器新开一个线程请求
+  * 将检测到状态变更时，如果设置有回调函数，异步线程就产生状态变更事件，将这个回调再放入事件队列中。再由JavaScript引擎执行
+
+## webworker & sharedWorker
+
+- 创建Worker时，JS引擎向浏览器申请开一个子线程（子线程是浏览器开的，完全受主线程控制，而且不能操作DOM）
+- JS引擎线程与worker线程间通过特定的方式通信（postMessage API，需要通过序列化对象来与线程交互特定的数据）
+
+## 浏览器渲染流程
+
+浏览器器内核拿到内容后，正常的渲染大概可以划分成以下几个步骤：
+
+- 输入url，发起请求，请求html文件
+
+- 预扫描<?>
+
+- 从根节点开始遍历每个可见节点，构建 DOM（文档对象模型）
+
+- 
+
+  - 解析 html 建立 DOM 树
+  - 解析 CSS 构建 CSSOM
+
+- 将 CSSOM 结合 DOM 合并成 渲染树（render tree）
+
+  - 某些节点不可见（例如脚本标记、元标记等），因为它们不会体现在渲染输出中，所以会被忽略
+
+  - 某些节点通过 CSS 隐藏，因此在渲染树中也会被忽略，例如，该节点上设置了`display: none` 属性
+
+    **Note:**  `visibility: hidden` 与 `display: none` 是不一样的。前者隐藏元素，但元素仍占据着布局空间（即将其渲染成一个空框），而后者 (`display: none`) 将元素从渲染树中完全移除，元素既不可见，也不是布局的组成部分
+
+  - 对于每个可见节点，为其找到适配的 CSSOM 规则并应用它们
+
+- 布局 render 树（Layout/reflow），负责各元素尺寸、位置的计算
+
+- 绘制 render 树（paint），绘制页面像素信息
+
+- 浏览器会将各层的信息发送给 GPU，GPU 会将各层合成（composite），显示在屏幕上
+
+
+
+<img src="https://github.com/YuArtian/blog/blob/master/JS%E5%9F%BA%E7%A1%80/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8E%9F%E7%90%86/2.png?raw=true"/>
+
+
+
+
+
 ### 重绘（Repaint）和重排/回流（Reflow）
+
+回流必将引起重绘，重绘不一定会引起回流
+
+#### 重排（Reflow）
+
+通过构造渲染树，将可见DOM节点以及它对应的样式结合起来，还需要计算它们在设备视口（viewport）内的确切位置和大小，这个计算的阶段就是 重排
+
+当 `Render Tree` 中部分或全部元素的尺寸、结构、或某些属性发生改变时，浏览器也会重排
 
 #### 重绘（Repaint）
 
-
+最终，通过构造渲染树和回流阶段，我们知道了哪些节点是可见的，以及可见节点的样式和具体的几何信息(位置、大小)，那么我们就可以将渲染树的每个节点都转换为屏幕上的实际像素，这个阶段就叫做重绘节点
 
 #### 如何避免重绘或者重排
+
+
+
+### 渲染阻塞
+
+HTML 和 CSS 都是阻塞渲染的资源
+
+#### HTML阻塞渲染
+
+HTML 显然是必需的，因为如果没有 DOM，我们就没有可渲染的内容，但 CSS 的必要性可能就不太明显
+
+#### CSS阻塞渲染
+
+CSS 是阻塞渲染的资源。需要将它尽早、尽快地下载到客户端，以便缩短首次渲染的时间
+
+但是 CSS 并不阻塞 DOM解析生成 DOM tree
+
+CSS 还会阻塞在它后面的 `js` 代码的执行。比如在一个 `link` 标签后面的 `js` 代码会一直等到 css 加载完成之后才执行
+
+#### JS阻塞渲染
+
+解析DOM时，当浏览器遇到一个 script 标记，DOM 构建将暂停，直至脚本完成执行，然后继续构建 DOM
+
+每次去执行  JavaScript 脚本都会严重地阻塞 DOM树 的构建
+
+
+
+### load事件与DOMContentLoaded事件
+
+`DOMContentLoaded` 事件：DOM加载完成时触发，不包括图片，样式表等
+
+`onload`事件：页面所有资源加载完成时触发
+
+顺序：`DOMContentLoaded`  -->   `onload`
+
+### css加载是否会阻塞dom树渲染
+
+头部引入的 css，下载是由异步线程单独下载
+
+- css加载不会阻塞DOM树解析（异步加载时DOM照常构建）
+- 但会阻塞render树渲染（渲染时需等css加载完毕，因为render树需要css信息）
+
+### 普通图层和复合图层
+
+## 优化
+
+**1. 使用 `media` 媒体查询来优化 CSS文件加载，避免防止阻塞的发生 <a href="https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-blocking-css?hl=zh-cn">参考</a> **
+
+eg：
+
+```
+<link href="style.css"    rel="stylesheet">
+<link href="style.css"    rel="stylesheet" media="all">
+<link href="portrait.css" rel="stylesheet" media="orientation:portrait">
+<link href="print.css"    rel="stylesheet" media="print">
+```
+
+- 第一个声明阻塞渲染，适用于所有情况
+- 第二个声明同样阻塞渲染：“all”是默认类型，如果您不指定任何类型，则隐式设置为“all”。因此，第一个声明和第二个声明实际上是等效的
+- 第三个声明具有动态媒体查询，将在网页加载时计算。根据网页加载时设备的方向（<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/@media/orientation">`orientation` 属性</a>），portrait.css 可能阻塞渲染，也可能不阻塞渲染
+- 最后一个声明只在打印网页时应用，因此网页首次在浏览器中加载时，它不会阻塞渲染
+
+**2. 使用 CDN节点加速**
+
+**3. 合理使用缓存**
+
+#### 
 
 
 
