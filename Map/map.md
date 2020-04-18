@@ -753,8 +753,6 @@ Chrome：Blink（Webkit的分支）
 
   每个浏览器都提供一组默认样式（也称为“User Agent 样式”），即不提供任何自定义样式时所看到的样式，我们的样式只是替换这些默认样式
 
-  
-
 - 将 CSSOM 结合 DOM 合并成 渲染树（render tree）
 
   - 某些节点不可见（例如脚本标记、元标记等），因为它们不会体现在渲染输出中，所以会被忽略
@@ -767,9 +765,21 @@ Chrome：Blink（Webkit的分支）
 
 - 布局 render 树（Layout/reflow），负责各元素尺寸、位置的计算
 
-- 绘制 render 树（paint），绘制页面像素信息
+- 绘制 render 树（Paint），绘制页面像素信息，本质上就是填充像素的过程
 
-- 浏览器会将各层的信息发送给 GPU，GPU 会将各层合成（composite），显示在屏幕上
+  包括绘制文字、颜色、图像、边框和阴影等，也就是一个 DOM 元素所有的可视效果
+
+  一般来说，这个绘制过程是在多个层上完成的
+
+- 渲染层合并（Composite），对页面中 DOM 元素的绘制是在多个层上进行的
+
+  在每个层上完成绘制过程之后，浏览器会将所有层按照合理的顺序合并成一个图层，然后显示在屏幕上
+
+  对于有位置重叠的元素的页面，这个过程尤其重要，因为一旦图层的合并顺序出错，将会导致元素显示异常
+
+  
+
+
 
 
 
@@ -917,7 +927,7 @@ ul.style.display = 'block';
 
 ###### 文档片段(document fragment)
 
-使用文档片段(document fragment)在当前DOM之外构建一个子树，再把它拷贝回文档
+通过 `createDocumentFragment` 创建一个游离于DOM树之外的节点，然后在此节点上批量操作，最后插入DOM树中，因此只触发一次重排
 
 ```
 const ul = document.getElementById('list');
@@ -976,40 +986,96 @@ function initP() {
 
 从上图中，我们可以看到，帧数一直都没到60。这个时候，只要我们点击一下那个按钮，把这个元素设置为绝对定位，帧数就可以稳定60
 
-##### css3硬件加速（GPU加速）
+##### 合成层优化（GPU加速）
 
-比起考虑如何减少回流重绘，我们更期望的是，根本不要回流重绘。这个时候，css3硬件加速就闪亮登场啦！！
+> https://fed.taobao.org/blog/taofed/do71ct/performance-composite/
 
-**划重点：使用css3硬件加速，可以让transform、opacity、filters这些动画不会引起回流重绘 。但是对于动画的其它属性，比如background-color这些，还是会引起回流重绘的，不过它还是可以提升这些动画的性能。**
 
-本篇文章只讨论如何使用，暂不考虑其原理，之后有空会另外开篇文章说明。
-
-###### 如何使用
 
 常见的触发硬件加速的css属性：
 
 - transform
 - opacity
 - filters
-- Will-change
+- will-change
 
-###### 效果
+在某些特定条件下，浏览器会主动将渲染层提至合成层，那么影响 composite 的因素有哪些？
 
-我们可以先看个[例子](https://chenjigeng.github.io/example/share/对比gpu加速/gpu加速-transform.html)。我通过使用chrome的Performance捕获了一段时间的回流重绘情况，实际结果如下图：
+1. 3D transforms: translate3d, translateZ 等;
+2. video, canvas, iframe 等元素;
+3. 通过 Element.animate() 实现的 opacity 动画转换;
+4. 通过 СSS 动画实现的 opacity 动画转换;
+5. position: fixed;
+6. will-change;
+7. filter;
+8. 有合成层后代同时本身 overflow 不为 visible（如果本身是因为明确的定位因素产生的 SelfPaintingLayer，则需要 z-index 不为 auto）
+   等等…
 
-[![image-20181210225609533](https://camo.githubusercontent.com/ee3a6409cf8b3a91bcaeb255f0cc815f4870acd7/68747470733a2f2f696d67323031382e636e626c6f67732e636f6d2f626c6f672f3939333334332f3230313831322f3939333334332d32303138313231303233303935393938372d313431393334383634342e706e67)](https://camo.githubusercontent.com/ee3a6409cf8b3a91bcaeb255f0cc815f4870acd7/68747470733a2f2f696d67323031382e636e626c6f67732e636f6d2f626c6f672f3939333334332f3230313831322f3939333334332d32303138313231303233303935393938372d313431393334383634342e706e67)
+###### 优点
 
-从图中我们可以看出，在动画进行的时候，没有发生任何的回流重绘。如果感兴趣你也可以自己做下实验。
+提升为合成层简单说来有以下几点好处：
 
-###### 重点
+- 合成层的位图，会交由 GPU 合成，比 CPU 处理要快
 
-- 使用css3硬件加速，可以让transform、opacity、filters这些动画不会引起回流重绘
-- 对于动画的其它属性，比如background-color这些，还是会引起回流重绘的，不过它还是可以提升这些动画的性能。
+- 当需要 repaint 时，只需要 repaint 本身，不会影响到其他的层
+
+- 对于 transform 和 opacity 效果，不会触发 layout 和 paint
+
+
+
+**以下是应该提升为合成层的情况**
+
+###### 提升动画效果的元素
+
+提升合成层的最好方式是使用 CSS 的 will-change 属性
+
+will-change 设置为 opacity、transform、top、left、bottom、right 可以将元素提升为合成层
+
+```
+#target {
+  will-change: transform;
+}
+```
+
+对于那些目前还不支持 will-change 属性的浏览器，目前常用的是使用一个 3D transform 属性来强制提升为合成层：
+
+```
+#target {
+  transform: translateZ(0);
+}
+```
+
+###### 使用 transform 或者 opacity 来实现动画效果
+
+>  元素提升为合成层后，transform 和 opacity 不会触发 paint，但如果不是合成层，则其依然会触发 paint
+
+对于一些体验要求较高的关键动画，比如一些交互复杂的玩法页面，存在持续变化位置的 animation 元素
+
+最好是使用 transform 来实现而不是通过改变 left/top 的方式
+
+这样做的原因是，如果使用 left/top 来实现位置变化，animation 节点和 Document 将被放到了同一个 GraphicsLayer 中进行渲染，持续的动画效果将导致整个 Document 不断地执行重绘
+
+而使用 transform 并且 提升为合成层的话，能够让 animation 节点被放置到一个独立合成层中进行渲染绘制，动画发生时不会影响到其它层
+
+并且另一方面，动画会完全运行在 GPU 上，相比起 CPU 处理图层后再发送给显卡进行显示绘制来说，这样的动画往往更加流畅
+
+###### 减少绘制区域
+
+对于不需要重新绘制的区域应尽量避免绘制，以减少绘制区域，比如一个 fix 在页面顶部的固定不变的导航 header，在页面内容某个区域 repaint 时，整个屏幕包括 fix 的 header 也会被重绘
+
+而对于固定不变的区域，我们期望其并不会被重绘，因此可以通过之前的方法，将其提升为独立的合成层
+
+减少绘制区域，需要仔细分析页面，区分绘制区域，减少重绘区域甚至避免重绘
 
 ###### css3硬件加速的坑
 
-- 如果你为太多元素使用css3硬件加速，会导致内存占用较大，会有性能问题。
-- 在GPU渲染字体会导致抗锯齿无效。这是因为GPU和CPU的算法不同。因此如果你不在动画结束的时候关闭硬件加速，会产生字体模糊
+- 如果你为太多元素使用css3硬件加速，会导致内存占用较大，会有性能问题
+
+- 在GPU渲染字体会导致抗锯齿无效
+
+  这是因为GPU和CPU的算法不同
+
+  因此如果你不在动画结束的时候关闭硬件加速，会产生字体模糊
 
 
 
@@ -1067,6 +1133,10 @@ Firefox 在样式表加载和解析的过程中，会禁止所有脚本
 - 但会阻塞render树渲染（渲染时需等css加载完毕，因为render树需要css信息）
 
 ### 普通图层和复合图层
+
+> https://juejin.im/entry/59dc9aedf265da43200232f9
+
+
 
 ## 优化
 
@@ -1407,6 +1477,242 @@ nginx和客户端是HTTP/2，而nginx和业务服务还是HTTP/1.1，因为nginx
 #### 协商升级
 
 [HTTP/2协商升级](#HTTP/2协商升级)
+
+# 网络安全
+
+## 劫持
+
+最常见的都是 ISP（网络运营商）的劫持
+
+### DNS劫持
+
+DNS劫持：在DNS服务器中，将www..com的域名对应的IP地址进行了变化。你解析出来的域名对应的IP，在劫持前后不一样
+
+1. 本地DNS劫持 ：攻击者在用户的计算机上安装木马恶意软件，并更改本地DNS设置以将用户重定向到恶意站点
+
+2. 路由器DNS劫持：许多路由器都有默认密码或固件漏洞，攻击者可以接管路由器并覆盖DNS设置，从而影响连接到该路由器的所有用户
+
+3. 中间 DNS攻击的人：攻击者拦截用户和DNS服务器之间的通信，并提供指向恶意站点的不同目标IP地址
+
+4. 流氓DNS服务器：攻击者攻击DNS服务器，并更改DNS记录以将DNS请求重定向到恶意站点
+
+### HTTP劫持
+
+HTTP劫持：你DNS解析的域名的IP地址不变。在和网站交互过程中的劫持了你的请求。在网站发给你信息前就给你返回了请求
+
+通常是在网页上加入一些广告，网站升级成 https 可以降低风险
+
+# 跨域
+
+## 同源策略
+
+> https://www.zhihu.com/question/25427931
+
+两个 url 中的 协议、域名、端口 都相同的时候，则认为他们是同源的
+
+一个域内的脚本仅仅具有本域内的权限，可以理解为本域脚本只能读写本域内的资源，而无法访问其它域的资源
+
+这种安全限制称为同源策略，然而安全性和方便性是成反比的
+
+设想若把 html、js、css、flash，image 等文件全部布置在一台服务器上，小网站这样凑活还行，大中网站如果这样做服务器根本受不了的，可用性都不能保证
+
+现代浏览器在安全性和可用性之间选择了一个平衡点。在遵循同源策略的基础上，选择性地为同源策略"开放了后门"
+
+img script style 等标签，都允许垮域引用资源，严格说这都是不符合同源要求的
+
+然而，你也只能是引用这些资源而已，并不能读取这些资源的内容
+
+## JSONP
+
+json with padding 填充式json
+
+### 原理
+
+1. JSONP是通过 script 标签加载数据的方式去获取数据当做 JS 代码来执行
+
+2. 提前在页面上声明一个函数，函数名通过接口传参的方式传给后台，后台解析到函数名后在原始数据上「包裹」这个函数名，发送给前端。换句话说，JSONP 需要对应接口的后端的配合才能实现
+
+### 封装
+
+```
+function jsonp(setting){
+  setting.data = setting.data || {}
+  setting.key = setting.key||'callback'
+  setting.callback = setting.callback||function(){} 
+  setting.data[setting.key] = '__onGetData__'
+
+  window.__onGetData__ = function(data){
+    setting.callback (data);
+  }
+
+  var script = document.createElement('script')
+  var query = []
+  for(var key in setting.data){
+    query.push( key + '='+ encodeURIComponent(setting.data[key]) )
+  }
+  script.src = setting.url + '?' + query.join('&')
+  document.head.appendChild(script)
+  document.head.removeChild(script)
+
+}
+
+jsonp({
+  url: 'http://api.jirengu.com/weather.php',
+  callback: function(ret){
+    console.log(ret)
+  }
+})
+jsonp({
+  url: 'http://photo.sina.cn/aj/index',
+  key: 'jsoncallback',
+  data: {
+    page: 1,
+    cate: 'recommend'
+  },
+  callback: function(ret){
+    console.log(ret)
+  }
+})
+```
+
+### 缺点
+
+- 只有 GET 方法
+
+- 错误处理机制并不完善
+
+- JSONP并不是跨域规范，它存在很明显的安全问题：callback参数注入和资源访问授权设置
+
+  可以在服务端端进行一些权限的限制
+
+  服务端和客户端也都依然可以做一些注入的安全处理，哪怕被攻克，它也只能读一些东西
+
+  但是就算是比较安全的CORS，同样可以在服务端设置出现漏洞或者不在浏览器的跨域限制环境下进行攻击，而且它不仅可以读，还可以写
+
+## CORS
+
+> https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS
+>
+> https://zhuanlan.zhihu.com/p/38972475
+>
+> 
+
+
+
+跨域资源共享([CORS](https://developer.mozilla.org/zh-CN/docs/Glossary/CORS)) 是一种机制，它使用额外的 [HTTP](https://developer.mozilla.org/zh-CN/docs/Glossary/HTTP) 头来告诉浏览器 让运行在一个 origin (domain) 上的Web应用被准许访问来自不同源服务器上的指定的资源
+
+CORS 请求会带上 `Origin`请求头，用来向别人的网站表明自己是谁；非 CORS 请求不带`Origin`头
+
+跨域资源共享标准（ [cross-origin sharing standard](http://www.w3.org/TR/cors/) ）允许在下列场景中使用跨域 HTTP 请求：
+
+- 由 [`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest) 或 [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) 发起的跨域 HTTP 请求。
+- Web 字体 (CSS 中通过` @font-face `使用跨域字体资源), [因此，网站就可以发布 TrueType 字体资源，并只允许已授权网站进行跨站调用](http://www.webfonts.info/wiki/index.php?title=%40font-face_support_in_Firefox)
+- [WebGL 贴图](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGL_API/Tutorial/Using_textures_in_WebGL)
+- 使用 `drawImage` 将 Images/video 画面绘制到 canvas
+
+### 预检请求
+
+#### 简单请求
+
+简单请求不会触发预检请求，满足下面情况的成为简单请求
+
+- 使用 GET、HEAD、POST 方法
+
+- 首部字段不能超出以下集合
+
+  - Accept
+
+  - Accept-Language
+
+  - Content-Language
+
+  - Content-Type，以及其值仅限于：
+
+    - text/plain
+    - multipart/form-data
+    - application/x-www-form-urlencode
+
+  - 请求中 `XMLHttpRequestUpload` 对象均没有注册任何事件监听
+
+    但 `XMLHttpRequestUpload`  可以使用 `XMLHttpRequestUpload.upload` 访问
+
+  - 请求中没有 `ReadableStream` 对象
+
+> 部分浏览器的部分版本的实现可能会为 [`Accept`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept), [`Accept-Language`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept-Language), 和 [`Content-Language`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Language) 首部字段的值添加了额外的限制
+>
+> 总之还是要看浏览器的实现才行
+
+#### 预检请求
+
+不满足简单请求的，都必须首先使用 OPTIONS 方法发起一个预检请求到服务器，来确定服务器是否允许后续的实际请求
+
+"预检请求“的使用，可以避免跨域请求对服务器的用户数据产生未预期的影响
+
+
+
+### CORS 静态资源缓存错乱
+
+> https://zhuanlan.zhihu.com/p/38972475
+
+#### 情况1
+
+在同一个浏览器下，先打开了`foo.taobao.com`上的一个页面，访问了我们的资源，这个资源被浏览器缓存了下来，和资源内容一起缓存的还有`Access-Control-Allow-Origin: https://foo.taobao.com`响应头
+
+这时又打开 `bar.taobao.com`上的一个页面，这个页面也要访问那个资源，这时它会读取本地缓存，读到的 `Access-Control-Allow-Origin`头是缓存下的 `https://foo.taobao.com` 而不是自己想要的 `https://bar.taobao.com`，这时就报跨域错误了，虽然它应该是能访问到这份资源的
+
+#### 情况2
+
+上面举的例子是“区分对待不同的`Origin`请求头”这类条件型 CORS 响应下引起的缓存错乱，这种问题是需要用户访问多个网站（`foo.taobao.com`和`bar.taobao.com`）后才可能触发的问题
+
+“区分对待有无`Origin`请求头”也可能会造成类似的问题，而且在同一个站点下就有可能触发
+
+比如用户先访问了`foo.taobao.com`的一个页面 A，页面 A 里用 img 标签加载了一张图片，注意这时候这张图片已经被浏览器缓存了，并且缓存里没有 Access-Control-Allow-Origin 响应头，因为发起的请求不带 Origin 请求头
+
+此时用户又访问了 `foo.taobao.com` 的另一个页面 B，**页面 B 里用 XHR 请求同一张图片**
+
+结果读了缓存，没有发现 CORS 响应头，报了跨域错误
+
+在一些场景下，页面 A 和页面 B 有可能会是同一个页面，也就是说在同一个页面里就有可能触发这个问题
+
+#### 解决
+
+使用 Vary：Origin
+
+有一个 HTTP **响应头**叫 `Vary`，`Vary` 响应头就是让同一个 URL 根据某个请求头的不同而使用不同的缓存
+
+比如常见的 `Vary: Accept-Encoding` 表示客户端要根据`Accept-Encoding`请求头的不同而使用不同的缓存，比如 gizp 的缓存一份，未压缩的缓存为另一份
+
+在 CORS 的场景下，我们需要使用 `Vary: Origin` 来保证不同网站发起的请求使用各自的缓存
+
+比如从`foo.taobao.com`发起的请求缓存下的响应头是：
+
+```text
+Access-Control-Allow-Origin: https://foo.taobao.com
+Vary: Origin
+```
+
+的话，`bar.taobao.com`在发起同 URL 的请求就不会使用这份缓存了，因为 `Origin`请求头变了
+
+还有 img 标签发起的非 CORS 请求缓存下的响应头是：
+
+```text
+Vary: Origin
+```
+
+的话， 在使用 **XHR 发起的 CORS 请求**也不会使用那份缓存，因为 `Origin` 请求头从无到有，也算是变了
+
+##### 总结一下就是
+
+**对于可缓存的静态资源来说**
+
+- 如果是写死的 `Access-Control-Allow-Origin`，一定不要加 `Vary: Origin`
+- 如果是根据 `Origin`请求头动态计算出的 `Access-Control-Allow-Origin`，一定要始终加上 `Vary: Origin`，即便在没有 `Origin`请求头的情况
+
+然而 OSS 和 S3 都有这样的 bug，并没有在响应中加入 vary
+
+##### 如何解决
+
+如果服务提供商就是不修，只能自己解决。可以通过增加额外的 URL 参数的方式，比如在非 CORS 请求场景下不加额外参数，在 CORS 场景下加个 `?cors`，这样就不会使用同一份缓存了
 
 
 
