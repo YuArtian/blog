@@ -1138,6 +1138,34 @@ Firefox 在样式表加载和解析的过程中，会禁止所有脚本
 
 
 
+### script标签中的 defer 和 async
+
+> https://segmentfault.com/q/1010000000640869
+
+1.  \<script src="script.js" \>\</script\>
+
+   没有 `defer` 或 `async`，浏览器会立即加载并执行指定的脚本，“立即”指的是在渲染该 `script` 标签之下的文档元素之前，也就是说不等待后续载入的文档元素，读到就加载并执行
+
+2.  \<script async src="script.js">\</script\>
+
+   有 `async`，加载和渲染后续文档元素的过程将和 `script.js` 的加载与执行并行进行（异步）
+
+   `async` 并不保证执行顺序，可以用于 Google Analytics 之类的不依赖其他脚本的代码
+
+3.  \<script async src="script.js">\</script\>
+
+   有 `defer`，加载后续文档元素的过程将和 `script.js` 的加载并行进行（异步）
+
+   `defer` 按照加载顺序执行脚本
+
+   `script.js` 的执行要在所有元素解析完成之后，`DOMContentLoaded` 事件触发之前完成
+
+不支持 defer 属性的浏览器的话，把所有脚本都丢到 \</body\> 之前，此法可保证非脚本的其他一切元素能够以最快的速度得到加载和解析
+
+<img src=""/>
+
+
+
 ## 优化
 
 **1. 使用 `media` 媒体查询来优化 CSS文件加载，避免防止阻塞的发生 <a href="https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-blocking-css?hl=zh-cn">参考</a> **
@@ -1713,6 +1741,18 @@ Vary: Origin
 ##### 如何解决
 
 如果服务提供商就是不修，只能自己解决。可以通过增加额外的 URL 参数的方式，比如在非 CORS 请求场景下不加额外参数，在 CORS 场景下加个 `?cors`，这样就不会使用同一份缓存了
+
+
+
+
+
+
+
+# Sec-Fetch-Mode
+
+
+
+
 
 
 
