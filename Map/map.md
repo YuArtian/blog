@@ -1141,6 +1141,8 @@ Firefox 在样式表加载和解析的过程中，会禁止所有脚本
 ### script标签中的 defer 和 async
 
 > https://segmentfault.com/q/1010000000640869
+>
+> https://github.com/hehongwei44/my-blog/issues/72
 
 1.  \<script src="script.js" \>\</script\>
 
@@ -1148,7 +1150,9 @@ Firefox 在样式表加载和解析的过程中，会禁止所有脚本
 
 2.  \<script async src="script.js">\</script\>
 
-   有 `async`，加载和渲染后续文档元素的过程将和 `script.js` 的加载与执行并行进行（异步）
+   `async` 一定会在页面的 load 事件前执行，但可能会在 DOMContentLoad 事件触发之前或之后执行
+
+   `async` 的脚本下载完成之后会立刻执行，执行过程会阻塞渲染
 
    `async` 并不保证执行顺序，可以用于 Google Analytics 之类的不依赖其他脚本的代码
 
@@ -1156,13 +1160,15 @@ Firefox 在样式表加载和解析的过程中，会禁止所有脚本
 
    有 `defer`，加载后续文档元素的过程将和 `script.js` 的加载并行进行（异步）
 
-   `defer` 按照加载顺序执行脚本
+   `defer` 按照加载顺序执行脚本<?> 
 
    `script.js` 的执行要在所有元素解析完成之后，`DOMContentLoaded` 事件触发之前完成
 
 不支持 defer 属性的浏览器的话，把所有脚本都丢到 \</body\> 之前，此法可保证非脚本的其他一切元素能够以最快的速度得到加载和解析
 
-<img src=""/>
+<img src="https://github.com/YuArtian/blog/blob/master/Map/async_defer.png?raw=true"/>
+
+
 
 
 
