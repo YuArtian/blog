@@ -518,6 +518,12 @@ class 默认内部的函数定义都是 strict 模式的
 
 ## Promise
 
+### 实现一个 Promise
+
+> https://github.com/YvetteLau/Blog/issues/2
+
+
+
 - 1000个Promise
 
 ## generator
@@ -538,9 +544,27 @@ class 默认内部的函数定义都是 strict 模式的
 
 new 的执行过程：
 
-- 以构造器的 prototype 属性（注意与私有字段[[prototype]]的区分）为原型，创建新对象
-- 将 this 和调用参数传给构造器，执行
-- 如果构造器返回的是对象，则返回，否则返回第一步创建的对象
+- 以构造器的 prototype 属性为原型，创建新对象 instance
+- 将构造器的 this 指向 instance ，将参数传给构造器，并执行构造器
+- 判断执行后返回的结果
+  - 如果返回的是基本类型（值类型）则忽略掉，依然返回 instance
+  - 如果返回的是引用类型，就直接返回
+
+代码实现：
+
+```
+function _new (constructer, ...args) {
+  if (!constructer) return
+  let target = Object.create(constructer.prototype)
+  let value = constructer.apply(target, args)
+  if (value && ( typeof value === 'function' || typeof value === 'object' )) {
+    return value
+  }
+  return target
+}
+```
+
+
 
 ## 类型转换
 
@@ -1117,13 +1141,160 @@ Firefox 在样式表加载和解析的过程中，会禁止所有脚本
 
 
 
-### load事件与DOMContentLoaded事件
+### 页面生命周期
 
-`DOMContentLoaded` 事件：DOM加载完成时触发，不包括图片，样式表等
+> https://zh.javascript.info/onload-ondomcontentloaded
 
-`onload`事件：页面所有资源加载完成时触发
+HTML 页面的生命周期包含三个重要事件：
 
-顺序：`DOMContentLoaded`  -->   `onload`
+- `DOMContentLoaded` —— 浏览器已完全加载 HTML，并构建了 DOM 树，但像 img 和样式表之类的外部资源可能尚未加载完成
+- `load` —— 浏览器不仅加载完成了 HTML，还加载完成了所有外部资源：图片，样式等
+- `beforeunload/unload` —— 当用户正在离开页面时
+
+每个事件都是有用的：
+
+- `DOMContentLoaded` 事件 —— DOM 已经就绪，因此处理程序可以查找 DOM 节点，并初始化接口
+- `load` 事件 —— 外部资源已加载完成，样式已被应用，图片大小也已知了
+- `beforeunload` 事件 —— 用户正在离开：我们可以检查用户是否保存了更改，并询问他是否真的要离开
+- `unload` 事件 —— 用户几乎已经离开了，但是我们仍然可以启动一些操作，例如发送统计数据
+
+#### DOMContentLoaded
+
+##### 使用
+
+`DOMContentLoaded` 事件发生在 `document` 对象上，必须用 `addEventListenser` 捕获
+
+```
+document.addEventListener("DOMContentLoaded", ready);
+// 不是 "document.onDOMContentLoaded = ..."
+```
+
+##### DOMContentLoaded 和 js
+
+DOMContentLoaded 会等待所有 js 脚本执行结束之后才触发
+
+例外：
+
+- 带有 `async` 的 js 不会阻塞 DOMContentLoaded
+- `document.createElement('script')` 动态生成的 js 不会阻塞 DOMContentLoaded
+
+##### DOMContentLoaded 和 css
+
+css 不阻塞 DOMContentLoaded
+
+例外：
+
+样式之后有 js 脚本，因为 js 必须等 css 加载完才能执行，而 DOMContentLoaded 要等 js 加载完
+
+所以，这个时候的 css 间接的阻塞了 DOMContentLoaded
+
+##### 內建自动填充
+
+Firefox，Chrome 和 Opera 都会在 `DOMContentLoaded` 中自动填充表单
+
+如果 `DOMContentLoaded` 被需要加载很长时间的脚本延迟触发，那么自动填充也会等待
+
+#### window.onload
+
+当整个页面，包括样式、图片和其他资源被加载完成时，会触发 `window` 对象上的 `load` 事件
+
+可以通过 `onload` 属性获取此事件
+
+#### window.onbeforeunload
+
+> https://www.chromestatus.com/feature/5082396709879808
+
+如果访问者触发了离开页面的导航（navigation）或试图关闭窗口，`beforeunload` 处理程序将要求进行更多确认
+
+onbeforeunload 的弹窗只有在特定条件时（页面中存在 form 等并且和用户发生交互）才被触发弹窗
+
+但是事件是一直会被触发的
+
+#### window.unload
+
+当访问者离开页面时，`window` 对象上的 `unload` 事件就会被触发
+
+我们可以在那里做一些不涉及延迟的操作，例如关闭相关的弹出窗口等
+
+##### 发送分析数据
+
+有一个值得注意的特殊情况是发送分析数据
+
+假设我们收集有关页面使用情况的数据：鼠标点击，滚动，被查看的页面区域等
+
+自然地，当用户要离开的时候，我们希望通过 `unload` 事件将数据保存到我们的服务器上
+
+但是通常，当一个文档被卸载时（unloaded），所有相关的网络请求都会被中止，有两种方法方法可以满足这种需求
+
+###### navigator.sendBeacon
+
+离开页面的时候，可以利用 navigator.sendBeacon 发送数据
+
+它在后台发送数据，转换到另外一个页面不会有延迟：浏览器离开页面，但仍然在执行 `sendBeacon`
+
+```
+let analyticsData = { /* 带有收集的数据的对象 */ };
+
+window.addEventListener("unload", function() {
+  navigator.sendBeacon("/analytics", JSON.stringify(analyticsData));
+};
+```
+
+- 请求以 POST 方式发送
+- 我们不仅能发送字符串，还能发送表单以及其他格式的数据，但通常是一个字符串化的对象
+- 数据大小限制在 64kb
+
+###### fetch 中的 keepalive
+
+同样可以做到离开页面还能进行网络请求
+
+但有一些限制：
+
+-  `keepalive` 请求的 body 限制为 64kb
+  - 如果我们收集了更多数据，我们可以定期将其以数据包的形式发送出去，这样就不会留下太多数据给最后的 `onunload` 请求了
+  - 该限制是对当前正在进行的所有请求的。因此，我们无法通过创建 100 个请求，每个 64kb 这样来作弊
+- 如果请求是在 `onunload` 中发起的，将无法处理服务器响应，因为文档在那个时候已经卸载了（unloaded），函数将无法工作
+  - 通常来说，服务器会向此类请求发送空响应，所以这不是问题
+
+#### document.readyState & readystatechange
+
+`document.readyState` 属性可以为我们提供当前加载状态的信息
+
+- `loading` —— 文档正在被加载
+- `interactive` —— 文档被全部读取
+- `complete` —— 文档被全部读取，并且所有资源（例如图片等）都已加载完成
+
+还有一个 `readystatechange` 事件，会在状态发生改变时触发，因此我们可以打印所有这些状态
+
+#### 整体声明周期流程
+
+```
+<script>
+  log('initial readyState:' + document.readyState);
+
+  document.addEventListener('readystatechange', () => log('readyState:' + document.readyState));
+  document.addEventListener('DOMContentLoaded', () => log('DOMContentLoaded'));
+
+  window.onload = () => log('window onload');
+</script>
+
+<iframe src="iframe.html" onload="log('iframe onload')"></iframe>
+
+<img src="http://en.js.cx/clipart/train.gif" id="img">
+<script>
+  img.onload = () => log('img onload');
+</script>
+```
+
+典型输出：
+
+1. [1] initial readyState:loading
+2. [2] readyState:interactive
+3. [2] DOMContentLoaded
+4. [3] iframe onload
+5. [4] img onload
+6. [4] readyState:complete
+7. [4] window onload
 
 ### css加载是否会阻塞dom树渲染
 
@@ -1144,11 +1315,11 @@ Firefox 在样式表加载和解析的过程中，会禁止所有脚本
 >
 > https://github.com/hehongwei44/my-blog/issues/72
 
-1.  \<script src="script.js" \>\</script\>
+1.  **普通脚本** \<script src="script.js" \>\</script\>
 
    没有 `defer` 或 `async`，浏览器会立即加载并执行指定的脚本，“立即”指的是在渲染该 `script` 标签之下的文档元素之前，也就是说不等待后续载入的文档元素，读到就加载并执行
 
-2.  \<script async src="script.js">\</script\>
+2.  **async** \<script async src="script.js">\</script\>
 
    `async` 一定会在页面的 load 事件前执行，但可能会在 DOMContentLoad 事件触发之前或之后执行
 
@@ -1156,13 +1327,27 @@ Firefox 在样式表加载和解析的过程中，会禁止所有脚本
 
    `async` 并不保证执行顺序，可以用于 Google Analytics 之类的不依赖其他脚本的代码
 
-3.  \<script async src="script.js">\</script\>
+3.  **defer** \<script defer src="script.js">\</script\>
 
    有 `defer`，加载后续文档元素的过程将和 `script.js` 的加载并行进行（异步）
 
    `defer` 按照加载顺序执行脚本<?> 
 
    `script.js` 的执行要在所有元素解析完成之后，`DOMContentLoaded` 事件触发之前完成
+   
+4.  **动态脚本**
+
+    ```
+    let script = document.createElement('script');
+    script.src = "/article/script-async-defer/long.js";
+    document.body.append(script); // (*)
+    ```
+
+    当脚本被附加到文档 `(*)` 时，脚本就会立即开始加载
+
+    默认情况下，动态脚本的行为是 `async` 的
+
+    可以通过将 `async` 特性显式地修改为 `false`，以将脚本的加载顺序更改为文档顺序（就像常规脚本一样）
 
 不支持 defer 属性的浏览器的话，把所有脚本都丢到 \</body\> 之前，此法可保证非脚本的其他一切元素能够以最快的速度得到加载和解析
 
