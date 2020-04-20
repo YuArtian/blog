@@ -1107,7 +1107,7 @@ Firefox 在样式表加载和解析的过程中，会禁止所有脚本
 
 每次去执行  JavaScript 脚本都会严重地阻塞 DOM树 的构建
 
-##### <a src="#defer_async"/>defer 和 async</a>
+##### <a href="#defer_async"/>defer 和 async</a>
 
 
 
