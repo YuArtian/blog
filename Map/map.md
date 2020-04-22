@@ -514,7 +514,56 @@ class 默认内部的函数定义都是 strict 模式的
 
 - 继承
 
+## setTimeout
 
+### 实现
+
+- 当通过 JavaScript 调用 setTimeout 设置回调函数的时候，渲染进程将会创建一个回调任务，包含了回调函数 showName、当前发起时间、延迟执行时间
+
+- 创建好回调任务之后，再将该任务添加到 **延迟执行队列** 中
+
+  并不是真正的队列结构，应为 `hashmap` 结构存储
+
+- 当 普通消息队列 中的一个任务（宏任务）执行完成之后，计算 延迟队列 中是否有完成的任务
+
+- 依次执行这些到期的任务，执行完成之后，再次下一个循环
+
+### tips
+
+#### 当前任务执行时间过久，会影响定时器任务执行
+
+```
+function bar() {
+    console.log('bar')
+}
+function foo() {
+    setTimeout(bar, 0);
+    for (let i = 0; i < 5000; i++) {
+        let i = 5+8+8+8
+        console.log(i)
+    }
+}
+foo()
+```
+
+定时器任务被推迟执行了，但是计时是独立计时的，如果超过计时时间会立即执行任务
+
+#### 嵌套调用的 setTimeout 存在最小间隔 4ms
+
+```
+function cb() { setTimeout(cb, 0); }
+setTimeout(cb, 0);
+```
+
+嵌套调用超过 5 次以上，后面每次的调用最小时间间隔是 4 毫秒
+
+未激活页面则为 1000ms 以上
+
+#### setTimeout 中的 this
+
+setTimeout 中 this 被设置为全局 window
+
+超时调用的代码都是在全局作用域中执行的，因此函数中 this 的值在非严格模式下指向 window对象
 
 ## Promise
 
@@ -680,15 +729,27 @@ module.exports = Promise;
 
 ## generator
 
-- async/await
 
-  
+
+## async/await
+
+
 
 ## 深浅拷贝
 
 
 
 ## this指向
+
+this 和 作用域链（环境链）是完全不同的两个系统
+
+this 是和执行上下文绑定的，每一个上下文中都有一个 this
+
+执行上下文主要分为三种——全局执行上下文、函数执行上下文和 eval 执行上下文
+
+所以对应的 this 也只有这三种——全局执行上下文中的 this、函数中的 this 和 eval 中的 this
+
+
 
 
 
