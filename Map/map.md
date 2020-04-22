@@ -514,6 +514,20 @@ class 默认内部的函数定义都是 strict 模式的
 
 - 继承
 
+## 事件循环机制&微任务&宏任务
+
+由 js 发起的
+
+### 宏任务
+
+页面中的大部分任务都是在主线程上执行的，这些任务包括了：
+
+- 渲染事件（如解析 DOM、计算布局、绘制）
+- 用户交互事件（如鼠标点击、滚动页面、放大缩小等）
+- JavaScript 脚本执行事件；网络请求完成、文件读写完成事件
+
+为了协调这些任务有条不紊地在主线程上执行，页面进程引入了消息队列和事件循环机制，渲染进程内部会维护多个消息队列，比如延迟执行队列和普通的消息队列。然后主线程采用一个 for 循环，不断地从这些任务队列中取出任务并执行任务。我们把这些消息队列中的任务称为 宏任务
+
 ## setTimeout
 
 ### 实现
@@ -564,6 +578,14 @@ setTimeout(cb, 0);
 setTimeout 中 this 被设置为全局 window
 
 超时调用的代码都是在全局作用域中执行的，因此函数中 this 的值在非严格模式下指向 window对象
+
+
+
+## XMLHttpRequest
+
+XMLHttpRequest 发起请求，是由浏览器的其他进程或者线程去执行，然后再将执行结果利用 IPC 的方式通知渲染进程，之后渲染进程再将对应的消息添加到消息队列中
+
+XMLHttpRequest 的回调任务属于宏任务
 
 ## Promise
 
@@ -749,7 +771,55 @@ this 是和执行上下文绑定的，每一个上下文中都有一个 this
 
 所以对应的 this 也只有这三种——全局执行上下文中的 this、函数中的 this 和 eval 中的 this
 
+this 的指向是可以改变的，跟它的调用方式有关系
 
+### 全局执行上下文的 this
+
+全局执行上下文中的 this 是指向 window 对象的
+
+这也是 this 和作用域链的唯一交点，作用域链的最底端包含了 window 对象，全局执行上下文中的 this 也是指向 window 对象
+
+### 函数执行上下文的 this
+
+默认情况下调用一个函数，其执行上下文中的 this 也是指向 window 对象
+
+#### call apply bind 设置
+
+可以设置函数执行上下文的 this 指向
+
+#### 通过对象调用方法设置
+
+通过一个对象来调用其内部的一个方法，该方法的执行上下文中的 this 指向对象本身
+
+#### 通过构造函数中设置
+
+通过 new 关键字构建了一个新对象，并且构造函数中的 this 其实就是新对象本身
+
+#### 箭头函数中的 this 取决于它的外部函数的 this
+
+```javascript
+var myObj = {
+    a : "myObj a",
+    showThis: function(){
+        console.log(this)
+        var bar = () => {
+            this.a = "bar a"
+            console.log(this)
+        }
+        bar()
+    }
+}
+
+myObj.showThis()
+// let f = myObj.showThis
+// f()
+console.log(myObj.a)
+console.log(window.a)
+```
+
+#### setTimeout 中的 this
+
+setTimeout 中的 this 指向全局 window，因为 setTimeout 的回调函数 被视为是在全局上下文中执行的
 
 
 
