@@ -523,10 +523,14 @@ class 默认内部的函数定义都是 strict 模式的
 > https://zhuanlan.zhihu.com/p/48522249
 >
 > https://time.geekbang.org/column/article/132931
+>
+> https://blog.csdn.net/v_JULY_v/article/details/6296329
 
 首先，浏览器是多进程的，包括浏览器主进程，渲染进程，插件进程，GPU进程，其中，每个tab页一个渲染进程
 
 渲染进程中是多线程的，有一个主线程（渲染线程，负责构建DOM、渲染、执行JS，还有子IO线程）和其他多个线程（IO线程，js引擎线程）
+
+JSC 引擎的术语，把宿主发起的任务称为宏观任务，把 JavaScript 引擎发起的任务称为微观任务
 
 ### 事件循环和消息队列
 
@@ -895,9 +899,16 @@ module.exports = Promise;
 
 - 1000个Promise
 
-## generator
 
 
+## generator & Iterator 
+
+生成器函数
+
+生成器函数是一个带星号函数，而且是可以暂停执行和恢复执行的
+
+- 在生成器函数内部执行一段代码，如果遇到 yield 关键字，那么 JavaScript 引擎将返回关键字后面的内容给外部，并暂停该函数的执行
+- 外部函数可以通过 next 方法恢复函数的执行
 
 ## async/await
 
