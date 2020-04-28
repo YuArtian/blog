@@ -28,7 +28,7 @@
 ### 🔮 ---- 前端知识补全计划 ----
 帮助<del>自己</del>大家梳理一些基础的知识，省得面试复习的时候没底儿哈。哈。。哈。。。
 还有没补全的部分，我会一直更新哒~<br>
-里面有
+> PS：现阶段里面绝大部分东西都是从各个地方搬运过来的<br>
 ## <a href="https://yuartian.github.io/"> 线上的gitbook开启啦 ~ </a>
 ## <a href="https://github.com/YuArtian/blog/blob/master/Map/map.md">🗺️ 知识地图 🗺️（你也可以叫它面试宝典）</a><br>
 <del>Xmind或许还是太麻烦了</del><br>
