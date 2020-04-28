@@ -6,6 +6,8 @@
 但是也包括一些思考 和 总结 和 分享 和 不知道你知不知道的玩意。。。<br><br>
 # ⭐ 把你 star 给劳资交了 ⭐
 ## 🚢 Logbook 🌊 🌊 🌊 ～
+#### -- 2020/4/28
+同步的把地图里的东西 写到 <a href="https://yuartian.github.io/">gitbook</a> 里
 #### -- 2020/4/16
 为了面试，加油做<a href="https://github.com/YuArtian/blog/blob/master/Map/map.md">知识地图</a>
 #### -- 2020/4/12
@@ -26,7 +28,8 @@
 ### 🔮 ---- 前端知识补全计划 ----
 帮助<del>自己</del>大家梳理一些基础的知识，省得面试复习的时候没底儿哈。哈。。哈。。。
 还有没补全的部分，我会一直更新哒~<br>
-
+里面有
+## <a href="https://yuartian.github.io/"> 线上的gitbook开启啦 ~ </a>
 ## <a href="https://github.com/YuArtian/blog/blob/master/Map/map.md">🗺️ 知识地图 🗺️（你也可以叫它面试宝典）</a><br>
 <del>Xmind或许还是太麻烦了</del><br>
 <del>概览图 --->(详情请自行<a href='https://github.com/YuArtian/blog/blob/master/%E5%89%8D%E7%AB%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE.xmind'>下载</a> 前端基础知识思维导图.xmind)</del>
