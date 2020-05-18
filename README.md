@@ -13,7 +13,7 @@
 还有没补全的部分，我会一直更新哒~<br>
 > PS：现阶段里面绝大部分东西都是从各个地方搬运过来的<br>
 ## <a href="https://yuartian.github.io/" target="_blank"> 线上的gitbook开启啦 ~ </a>
-## <a href="https://github.com/YuArtian/blog/blob/master/Map/map.md" target="_blank">🗺️ 知识地图 🗺️（你也可以叫它面试宝典）</a><br>
+#### <a href="https://github.com/YuArtian/blog/blob/master/Map/map.md" target="_blank">🗺️ 知识地图 🗺️（你也可以叫它面试宝典）</a><br>
 <del>Xmind或许还是太麻烦了</del><br>
 <del>概览图 --->(详情请自行<a href='https://github.com/YuArtian/blog/blob/master/%E5%89%8D%E7%AB%AF%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE.xmind' target="_blank">下载</a> 前端基础知识思维导图.xmind)</del>
 
@@ -66,6 +66,8 @@
 - <a href="https://github.com/YuArtian/blog/issues/12">【良心推荐】--> React-Grid-Layout</a>
 
 # 🚢 Logbook 🌊 🌊 🌊 ～
+#### -- 2020/5/8
+我特么真的是醉了，老是忘提交代码，天地良心啊我天天code结果不是全绿的
 #### -- 2020/4/28
 同步的把地图里的东西 写到 <a href="https://yuartian.github.io/">gitbook</a> 里
 #### -- 2020/4/16
