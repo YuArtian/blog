@@ -470,7 +470,7 @@ class 声明在全局的行为跟 function 和 var 都不一样。在 class 声�
 
 但是其实 class 声明也是有预处理的
 
-```
+```js
 var c = 1;
 function foo(){
     console.log(c);//报错
@@ -743,7 +743,7 @@ XMLHttpRequest 的回调任务属于宏任务
 
 > https://github.com/YvetteLau/Blog/issues/2
 
-```
+```js
 /**
  * 1. new Promise时，需要传递一个 executor 执行器，执行器立刻执行
  * 2. executor 接受两个参数，分别是 resolve 和 reject
