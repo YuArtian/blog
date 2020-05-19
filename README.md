@@ -1,5 +1,6 @@
 # 懒癌的招牌已被我一脚踢开
 #### 天天更，随时更，为了面试努力更 (๑•̀ㅂ•́)و✧ 
+<img src="https://github.com/YuArtian/blog/blob/master/img/%E6%8F%92%E5%9B%BE/81096aeb8953a3767e59016b395a0fc.jpg?raw=true"/>
 # <del>懒癌 + 拖延症是真的没治的</del>
 ## 这是一个个人博客
 ### <del>所以说 我想怎么水(鸽)就怎么水(鸽)～ </del>不能再鸽了 再鸽就更尼玛菜了
