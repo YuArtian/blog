@@ -1,5 +1,6 @@
 # 懒癌的招牌已被我一脚踢开
-# <a href="https://yuartian.github.io/" target="_blank"> 欢迎点击 ~ </a>
+# <a href="https://yuartian.github.io/" target="_blank"> 欢迎查看我的电子书 ~ </a>
+> 更新前端路由，vue-router 源码，js异步处理 --2020/5/20
 #### 天天更，随时更，为了面试努力更 (๑•̀ㅂ•́)و✧ 
 <img src="https://github.com/YuArtian/blog/blob/master/img/%E6%8F%92%E5%9B%BE/81096aeb8953a3767e59016b395a0fc.jpg?raw=true"/><br>
 # <del>懒癌 + 拖延症是真的没治的</del>
