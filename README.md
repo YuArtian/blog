@@ -13,7 +13,9 @@
 - <a href="https://github.com/YuArtian/blog/blob/master/%E8%87%AA%E5%88%B6webpack%E4%B9%8B%E6%89%93.%E6%89%93..%E6%89%93...%E6%89%93%E5%8C%85.md">自制webpack之 打.打..打...打包</a>
 - <a href="https://github.com/YuArtian/blog/blob/master/%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E7%9A%84%E7%AB%9E%E6%80%81%E9%97%AE%E9%A2%98.md">如何解决异步请求的竞态问题</a>
 - <a href="https://github.com/YuArtian/blog/blob/master/%5Bcookie%E5%AE%9E%E6%88%98-1%5D%E7%A7%8D%E4%B8%8B%E4%B8%80%E4%B8%AAcookie.md">[cookie实战-1]种下一个cookie.md</a>
-<hr>
+
+<hr/>
+
 - <a href="https://github.com/YuArtian/blog/issues/5">如何判断回文字符串</a>
 - <a href="https://github.com/YuArtian/blog/issues/6">如何将一个伪数组变成真正的数组</a>
 - <a href="https://github.com/YuArtian/blog/issues/7">实现一个 Storage（单例模式）</a>
