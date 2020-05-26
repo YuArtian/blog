@@ -183,7 +183,7 @@ Lazy Parse 会将不必要的函数（没有立即执行的函数）进行预解
 
 这两种解析器在解析的过程中是交替进行解析的
 
-```
+```js
 let a = 0; //Top level code is eager
 //IIFE
 (function eager() {...})() //Body is eager
@@ -200,7 +200,7 @@ function lazy() {...} //Body is lazy
 
 下面看看一些复杂的解析情况：
 
-```
+```js
 let f1 = function lazy() {...};使用lazy-parsing,没有问题
 
 let  f2 = function lazy() {...}()//糟糕的情况，在看到最后的括号之前已经使用了lazy-parsing，但遇到括号后，不得不里面又转向eager-parsing，重新parse
