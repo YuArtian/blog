@@ -3,16 +3,17 @@
 ## 📖 茵蒂克丝 🔎🔎🔎 ～<br>
 
 ### 🕯 ---- 博客内容 ----
-- <a href="https://github.com/YuArtian/blog/issues/1">\_\_proto\_\_ 和 prototype的关系</a>
-- <a href="https://github.com/YuArtian/blog/issues/2">float 和 inline-block 的区别</a>
-- <a href="https://github.com/YuArtian/blog/issues/3">容我小小的写个继承</a>
-- <a href="https://github.com/YuArtian/blog/issues/4">变量声明，作用域 和 this 的碎碎念</a>
-- <a href="https://github.com/YuArtian/blog/issues/15">JavaScript 浮点数运算防坑指南</a>
-- <a href="https://github.com/YuArtian/blog/issues/18">前端实现点击下载全攻略</a>
-- <a href="https://github.com/YuArtian/blog/blob/master/JS%E4%B8%AD%E7%9A%84%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E2%80%94%E2%80%94%E9%93%BE%E8%A1%A8(Linked-list).md">【我有一个链表想跟你谈谈~】- JS中的算法与数据结构-链表(Linked-list)</a>
-- <a href="https://github.com/YuArtian/blog/blob/master/%E8%87%AA%E5%88%B6webpack%E4%B9%8B%E6%89%93.%E6%89%93..%E6%89%93...%E6%89%93%E5%8C%85.md">自制webpack之 打.打..打...打包</a>
-- <a href="https://github.com/YuArtian/blog/blob/master/%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E7%9A%84%E7%AB%9E%E6%80%81%E9%97%AE%E9%A2%98.md">如何解决异步请求的竞态问题</a>
+
 - <a href="https://github.com/YuArtian/blog/blob/master/%5Bcookie%E5%AE%9E%E6%88%98-1%5D%E7%A7%8D%E4%B8%8B%E4%B8%80%E4%B8%AAcookie.md">[cookie实战-1]种下一个cookie.md</a>
+- <a href="https://github.com/YuArtian/blog/blob/master/%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E7%9A%84%E7%AB%9E%E6%80%81%E9%97%AE%E9%A2%98.md">如何解决异步请求的竞态问题</a>
+- <a href="https://github.com/YuArtian/blog/blob/master/%E8%87%AA%E5%88%B6webpack%E4%B9%8B%E6%89%93.%E6%89%93..%E6%89%93...%E6%89%93%E5%8C%85.md">自制webpack之 打.打..打...打包</a>
+- <a href="https://github.com/YuArtian/blog/blob/master/JS%E4%B8%AD%E7%9A%84%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E2%80%94%E2%80%94%E9%93%BE%E8%A1%A8(Linked-list).md">【我有一个链表想跟你谈谈~】- JS中的算法与数据结构-链表(Linked-list)</a>
+- <a href="https://github.com/YuArtian/blog/issues/18">前端实现点击下载全攻略</a>
+- <a href="https://github.com/YuArtian/blog/issues/15">JavaScript 浮点数运算防坑指南</a>
+- <a href="https://github.com/YuArtian/blog/issues/4">变量声明，作用域 和 this 的碎碎念</a>
+- <a href="https://github.com/YuArtian/blog/issues/3">容我小小的写个继承</a>
+- <a href="https://github.com/YuArtian/blog/issues/2">float 和 inline-block 的区别</a>
+- <a href="https://github.com/YuArtian/blog/issues/1">\_\_proto\_\_ 和 prototype的关系</a>
 
 <hr/>
 
