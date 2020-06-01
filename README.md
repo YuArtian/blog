@@ -54,7 +54,7 @@
 
 # 🚢 Logbook 🌊 🌊 🌊 ～
 ### 2020/05/26
-要找工作了。。。没钱冲本子了 T.T<br>
+要找工作了。。。T.T<br>
 有没有大厂的坑位啊。。。<br>
 <img src="https://github.com/YuArtian/blog/blob/master/img/%E6%8F%92%E5%9B%BE/dota2Ti.gif?raw=true"/>
 ### 重新起航
