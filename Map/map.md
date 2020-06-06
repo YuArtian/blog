@@ -1571,7 +1571,7 @@ Firefox 在样式表加载和解析的过程中，会禁止所有脚本
 
 每次去执行  JavaScript 脚本都会严重地阻塞 DOM树 的构建
 
-##### <a href="#defer_async"/>defer 和 async</a>
+#####  <a href="#defer_async"/>defer 和 async</a>
 
 
 
@@ -1930,11 +1930,11 @@ webSocket = new WebSocket("ws://destination.server.ext", "optionalProtocol");
 
 #### Connection & Upgrade（请求头）（必须）
 
-如果需要从头开始创建WebSocket连接，则必须自己处理握手过程。
+如果需要从头开始创建WebSocket连接，则必须自己处理握手过程
 
 创建初始HTTP / 1.1会话后，需要通过向[`Upgrade`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Upgrade)和[`Connection`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Connection)标头添加标准请求来请求升级，如下所示：
 
-```html
+```js
 Connection: Upgrade
 Upgrade: websocket
 ```
