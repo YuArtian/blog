@@ -1,12 +1,14 @@
 # 这是一个个人博客
 
-## 📖 茵蒂克丝 🔎🔎🔎 ～<br>
+### 也许一切都会好起来的吧。。。。
 
 <a href="https://yuartian.github.io/">
   <img src="https://yuartian.github.io/assets/img/chenyifaer.af818feb.jpg"/><br>
 </a>
 
-#### <a href="https://yuartian.github.io/"> 来自面试官的灵魂拷问 </a><br>
+### <a href="https://yuartian.github.io/"> 来自面试官的灵魂拷问 </a><br>
+
+## 📖 茵蒂克丝 🔎🔎🔎 ～<br>
 
 ### 🕯 ---- 博客内容 ----
 
@@ -61,6 +63,8 @@
 - <a href="https://github.com/YuArtian/blog/issues/12">【良心推荐】--> React-Grid-Layout</a>
 
 # 🚢 Logbook 🌊 🌊 🌊 ～
+### 2020/06/14
+也许一切都会好起来的...吧?
 ### 2020/06/06
 找个工作也太难了。。。<br>
 <img src="https://github.com/YuArtian/blog/blob/master/img/%E6%8F%92%E5%9B%BE/%E7%8C%AB%E5%92%AA%E6%B5%81%E6%B3%AA.jpeg?raw=true"/>
