@@ -1,13 +1,5 @@
 # 这是一个个人博客
 
-### 也许一切都会好起来的吧。。。。
-
-<a href="https://yuartian.github.io/">
-  <img src="https://yuartian.github.io/assets/img/chenyifaer.af818feb.jpg"/><br>
-</a>
-
-### <a href="https://yuartian.github.io/"> 来自面试官的灵魂拷问 </a><br>
-
 ## 📖 茵蒂克丝 🔎🔎🔎 ～<br>
 
 ### 🕯 ---- 博客内容 ----
