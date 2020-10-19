@@ -60,6 +60,8 @@
 - <a href="https://github.com/YuArtian/blog/issues/12">【良心推荐】--> React-Grid-Layout</a>
 
 # 🚢 Logbook 🌊 🌊 🌊 ～
+### 2020/10/19
+好忙，在落地微前端架构，快有结果了
 ### 2020/07/30
 忙起来了。。。好久没更啊。啊。。啊。。。啊。。。。\
 不过我一直都有写这个<a href="https://yuartian.github.io/">https://yuartian.github.io/</a>，也算是不偷懒了\
