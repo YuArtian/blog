@@ -60,6 +60,9 @@
 - <a href="https://github.com/YuArtian/blog/issues/12">【良心推荐】--> React-Grid-Layout</a>
 
 # 🚢 Logbook 🌊 🌊 🌊 ～
+### 2020/11/24
+微前端好大个坑，并没有用qiankun，总喜欢自己实现（作死）
+加了好多班。。。
 ### 2020/10/19
 好忙，在落地微前端架构，快有结果了
 ### 2020/07/30
