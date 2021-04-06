@@ -1,5 +1,4 @@
 # 这是一个个人博客
-## 所以我想怎么水(鸽)就怎么水(鸽)
 
 ### <a href="https://yuartian.github.io/"><img width="200" src="https://github.com/YuArtian/blog/blob/master/img/%E6%8F%92%E5%9B%BE/holetoanotheruniverse.jpeg?raw=true"/></a>
 
