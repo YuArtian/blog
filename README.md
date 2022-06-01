@@ -7,7 +7,7 @@
 https://yuartian.github.io/
 
 ### 🕯 ---- 博客内容 ----
-
+- <a href="https://github.com/YuArtian/blog/blob/master/Blog/CSRF%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0%E4%B8%8E%E9%98%B2%E8%8C%83%E8%AF%A6%E8%A7%A3.md">CSRF 跨站请求伪造与防范详解</a>
 - <a href="https://github.com/YuArtian/blog/blob/master/Blog/%5Bcookie%E5%AE%9E%E6%88%98-1%5D%E7%A7%8D%E4%B8%8B%E4%B8%80%E4%B8%AAcookie.md">[cookie实战-1]种下一个cookie.md</a>
 - <a href="https://github.com/YuArtian/blog/blob/master/Blog/%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E7%9A%84%E7%AB%9E%E6%80%81%E9%97%AE%E9%A2%98.md">如何解决异步请求的竞态问题</a>
 - <a href="https://github.com/YuArtian/blog/blob/master/Blog/%E8%87%AA%E5%88%B6webpack%E4%B9%8B%E6%89%93.%E6%89%93..%E6%89%93...%E6%89%93%E5%8C%85.md">自制webpack之 打.打..打...打包</a>
