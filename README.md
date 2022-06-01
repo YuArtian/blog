@@ -1,11 +1,10 @@
 # 这是一个个人博客
-## 所以我想怎么水(鸽)就怎么水(鸽)
 
 ### <a href="https://yuartian.github.io/"><img width="200" src="https://github.com/YuArtian/blog/blob/master/img/%E6%8F%92%E5%9B%BE/holetoanotheruniverse.jpeg?raw=true"/></a>
 
-> Emmmm。。。不要戳上面的洞 ^。^
 
-
+### ---- 知识整理 ----
+https://yuartian.github.io/
 
 ### 🕯 ---- 博客内容 ----
 
@@ -43,32 +42,3 @@
 - <a href="https://github.com/YuArtian/y-redux">练习自己写个跟Redux一样的Redux，手写一下源码，主要加深下理解</a>
 - <a href="https://github.com/YuArtian/y-webpack">自己实现一个简单的webpack(简易版)</a>
 - <a href="https://github.com/YuArtian/y-tapable">自己实现一个简单的tapable(最初版)</a>
-
-### 🏷 ---- 随手记 ----
-- <a href="https://github.com/YuArtian/blog/issues/19">随手记 --- 权限系统中的替换节点问题</a>
-- <a href="https://github.com/YuArtian/blog/blob/master/Javascript%20%E5%92%8C%20JScript%20%E5%92%8C%20ECMAScript%20%E5%92%8C%20ECMA-262%20%E5%92%8C%20TC39%E3%80%82%E3%80%82%E3%80%82.md">随手记 --- Javascript 和 JScript 和 ECMAScript 和 ECMA-262 和 TC39。。。
-</a><br>
-- <a href="https://github.com/YuArtian/blog/blob/master/ECMA%E7%9A%84%E5%90%84%E7%89%88%E6%9C%AC%E8%A7%84%E8%8C%83.md">随手记 --- ECMA的各版本规范</a>
-- <a href="https://github.com/YuArtian/blog/blob/master/%E5%8F%AF%E6%89%A7%E8%A1%8C%E4%BB%A3%E7%A0%81%E4%B8%8E%E6%89%A7%E8%A1%8C%E7%8E%AF%E5%A2%83.md">随手记 --- 可执行代码与执行环境</a>
-
-### <a href="https://yuartian.github.io/">🔮 ---- 前端知识补全计划 ----</a>
-帮助<del>自己</del>大家梳理一些基础的知识，省得面试复习的时候没底儿哈。哈。。哈。。。
-还有没补全的部分，我会一直更新哒~<br>
-
-### 🔔 ---- 良心推荐 ----
-里面是我用过的比较好用的库，再次也当做一个记录吧 ~ 。~
-- <a href="https://github.com/YuArtian/blog/issues/12">【良心推荐】--> React-Grid-Layout</a>
-
-# 🚢 Logbook 🌊 🌊 🌊 ～
-### 2020/07/30
-忙起来了。。。好久没更啊。啊。。啊。。。啊。。。。\
-不过我一直都有写这个<a href="https://yuartian.github.io/">https://yuartian.github.io/</a>，也算是不偷懒了\
-另外最近在搞可视化系统\
-### 2020/06/14
-也许一切都会好起来的...吧?
-### 2020/06/06
-找个工作也太难了。。。<br>
-<img src="https://github.com/YuArtian/blog/blob/master/img/%E6%8F%92%E5%9B%BE/%E7%8C%AB%E5%92%AA%E6%B5%81%E6%B3%AA.jpeg?raw=true"/>
-### 2020/05/26
-<img src="https://github.com/YuArtian/blog/blob/master/img/%E6%8F%92%E5%9B%BE/dota2Ti.gif?raw=true"/><br>
-### 重新起航
